@@ -1,0 +1,8 @@
+#projects-tasks-item {
+	padding:0;
+	margin:0;
+}
+
+.task-item {
+	list-style-type: none;
+}
