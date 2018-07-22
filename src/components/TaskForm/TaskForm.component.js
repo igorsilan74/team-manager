@@ -7,7 +7,7 @@ class TaskForm extends Component {
 	render() {
 	
       const { currentUser, currentTask  } = this.props;
-console.log(currentUser);
+
       return (
         <div>
 		  {currentTask.description+' '+currentTask.projectName.substring(0,4)+'-'+currentTask.id.substring(0,4)}
