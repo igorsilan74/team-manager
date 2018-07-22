@@ -4,7 +4,7 @@ import EmployeeListItem from '../EmployeeListItem/EmployeeListItem.component';
 import { connect } from 'react-redux';
 import { modalForm } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
-import { saveEmployee, deleteEmployee, setEmployees, addEmployee } from '../../redux/actions';	
+import { saveEmployee, deleteEmployee, setEmployees, addEmployee, deleteEmployeeStore, setCurrentUser } from '../../redux/actions';	
 import { List } from "react-virtualized";
 
 
@@ -111,6 +111,7 @@ class EmployeeList extends Component {
 		}
 		
 		dispatch(setEmployees());
+		dispatch(setCurrentUser(currentUser));
 		this.forceUpdateHandler();
 		modalForm('editEmployeeModal',false);
 
@@ -155,8 +156,9 @@ class EmployeeList extends Component {
 	  const { dispatch, currentUser } = this.props;  
 	
 	  dispatch(deleteEmployee(currentUser.id));
-	  this.forceUpdateHandler();
+	  dispatch(deleteEmployeeStore(currentUser.id));
 	  dispatch(setEmployees());
+	  this.forceUpdateHandler();
 	  modalForm('confirmModal',false);
     }
   

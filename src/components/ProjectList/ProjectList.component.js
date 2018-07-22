@@ -4,7 +4,7 @@ import ProjectListItem from '../ProjectListItem/ProjectListItem.component';
 import { connect } from 'react-redux';
 import { modalForm } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
-import { saveProject, deleteProject, setProjects, addProject } from '../../redux/actions';	
+import { saveProject, deleteProject, setProjects, addProject, deleteProjectStore, setCurrentProject } from '../../redux/actions';	
 import { List } from "react-virtualized";
 
 
@@ -69,6 +69,7 @@ class ProjectList extends Component {
 	  }	
 	
 	  dispatch(setProjects());
+	  dispatch(setCurrentProject(currentProject));
       this.forceUpdateHandler();
 	  modalForm('editProjectModal',false);
 
@@ -103,6 +104,7 @@ class ProjectList extends Component {
 	confirmCloseAndDelete() {
 	  const { dispatch, currentProject } = this.props;  
 	  dispatch(deleteProject(currentProject.id));
+	  dispatch(deleteProjectStore(currentProject.id));
 	  dispatch(setProjects());
 	  this.forceUpdateHandler();
 	  modalForm('confirmModal',false);

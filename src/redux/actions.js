@@ -13,7 +13,9 @@ import {
 	SET_LOGGED_USER,
 	SET_CURRENT_PROJECT,
 	SET_PROJECT_TASKS_STORE,
-	SET_CURRENT_TASK
+	SET_CURRENT_TASK,
+	DELETE_EMPLOYEE_STORE,
+	DELETE_PROJECT_STORE
 } from './actionTypes';
 		 
 import axios from 'axios';
@@ -225,7 +227,7 @@ export const loadEmployee = (id) => {
    }
 }
 
-const setCurrentUser = (user) => ({
+export const setCurrentUser = (user) => ({
 	type: SET_CURRENT_USER,
 	data:{
 		currentUser:user
@@ -305,6 +307,15 @@ export const setEmployees = () => {
    }
 }
 
+export const deleteEmployeeStore = (id) => {
+   return {
+	type: DELETE_EMPLOYEE_STORE,
+	data:{
+		id
+	}
+   }
+
+}
 
 //////////////////////////////projects//////////////////////////////
 
@@ -362,6 +373,16 @@ export const setProjectTasksStore = (currentProjectTasks,task) => {
 	data:{
 		currentProjectTasks,
 		task
+	}
+   }
+
+}
+
+export const deleteProjectStore = (id) => {
+   return {
+	type: DELETE_PROJECT_STORE,
+	data:{
+		id
 	}
    }
 

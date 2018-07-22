@@ -9,7 +9,8 @@ import {
   DELETE_PROJECT_EMPLOYEE,
   ADD_PROJECT_EMPLOYEE,
   SET_PROJECT_TASKS_STORE,
-  ADD_PROJECT_TASK
+  ADD_PROJECT_TASK,
+  DELETE_PROJECT_STORE
 } from './actionTypes';
 
 const initialState =  {
@@ -64,7 +65,23 @@ export default (state = initialState, action) => {
 	  }
 	  
       return { ...state, currentProjectTasks };
-    } 
+    }
+
+	case DELETE_PROJECT_STORE: {
+      const { id } = action.data;
+	  const projects = [...state.projects];
+	  
+	  if (projects.length>0) {
+	    for (let i=0;i<projects.length;i++) {
+			if (projects[i].id===id) {
+				projects.splice(i,1);
+				break;
+			}
+		}
+	  }
+	  
+      return { ...state, projects };
+    }
 		
 	
 	case LOAD_PROJECT: {

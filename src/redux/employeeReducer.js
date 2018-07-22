@@ -9,7 +9,8 @@ import {
   CHANGE_USER_SKILL_LEVEL,
   CHANGE_USER_AVATAR,
   LOAD_EMPLOYEE,
-  SET_LOGGED_USER
+  SET_LOGGED_USER,
+  DELETE_EMPLOYEE_STORE
 } from './actionTypes';
 
 const initialState =  {
@@ -136,6 +137,22 @@ export default (state = initialState, action) => {
       const { data:currentUserTasks } = action.payload;
       return { ...state, currentUserTasks };
     } 
+	
+	case DELETE_EMPLOYEE_STORE: {
+      const { id } = action.data;
+	  const employees = [...state.employees];
+	  
+	  if (employees.length>0) {
+	    for (let i=0;i<employees.length;i++) {
+			if (employees[i].id===id) {
+				employees.splice(i,1);
+				break;
+			}
+		}
+	  }
+	  
+      return { ...state, employees };
+    }
   
     default:
       return state
