@@ -1,0 +1,17 @@
+.project-tasks-title {
+	font-weight: bold;
+	font-size: 1.4em;
+}
+
+.task-column-title {
+	font-weight: bold;
+	font-size: 1.2em;
+}
+
+.show {
+	display:block !important;
+}
+
+.task-column {
+	 border-left: 1px solid black;
+}

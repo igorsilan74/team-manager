@@ -1,0 +1,25 @@
+.project-team {
+  list-style-type: none; 
+  padding-left:0px;
+  margin-left:20px;
+  width: 1100px  !important;
+}
+
+.project-team--title {
+  font-size: 1.2em;
+  padding-bottom: 10px;
+  padding-left: 30px;
+  text-align:left;
+}
+
+.row {
+	margin-left:0px !important;
+	margin-right:0px !important;
+}
+.show {
+	display:block !important;
+}
+
+#employee-select {
+	width:300px;
+}

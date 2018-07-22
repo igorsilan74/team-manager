@@ -2,36 +2,61 @@ import React, { Component } from 'react';
 import './UserProjectsItem.component.css';
 import UserProjectsTasks from '../UserProjectsTasks/UserProjectsTasks.component';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { loadProject, setProjectEmployees, setProjectTasks } from '../../redux/actions';	
 
 class UserProjectsItem extends Component {
  
- render() {
+	changeProject = (id) => {
+      const { dispatch } = this.props;
+      dispatch(loadProject(id));
+	  dispatch(setProjectEmployees(id));
+      dispatch(setProjectTasks(id));
+	}
+  
+	render() {
 	
-   const { projectId, projectName,shortName, tasks, history } = this.props;
+      const { projectId, projectName, tasks } = this.props;
 
-   return (
-   <div>
+      return (
+        <div>
 		  <li className="project-items">
 		    
-			 <Link
-			   className="link--project"
-			   to={'/projects/'+projectId}
-		     >
+			<Link
+			className="link--project"
+			to={'/project/'+projectId}
+			onClick={() => this.changeProject(projectId)}
+		    >
+			 
 		    {projectName}
-		     </Link>
+		    </Link>
 			
 			<UserProjectsTasks
-			  tasks={tasks}
-			  shortName={shortName}
+			tasks={tasks}
+			projectName={projectName}
 			/>
 			
 		  </li>	
-	</div>
+	    </div>
 
-  );
+      );
 	
- }
+	}
  
 }
 
-export default UserProjectsItem;
+
+const mapStateToProps = (state) => {
+	
+	const {
+		currentProject
+	} = state.projects;
+	 
+	 
+	return {
+		currentProject
+	};
+}
+
+
+export default connect(mapStateToProps)(UserProjectsItem);

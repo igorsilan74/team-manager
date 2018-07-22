@@ -1,22 +1,21 @@
 import { 
   ADD_EMPLOYEE,
   SET_EMPLOYEES, 
-  CHANGE_EMPLOYEE, 
   REMOVE_EMPLOYEE,
   SET_CURRENT_USER,
   SET_USER_PROJECTS,
   SET_USER_TASKS,
-  SET_USER_PROJECTS_TASKS,
   CHANGE_USER_SKILL,
   CHANGE_USER_SKILL_LEVEL,
-  CHANGE_USER_AVATAR
+  CHANGE_USER_AVATAR,
+  LOAD_EMPLOYEE,
+  SET_LOGGED_USER
 } from './actionTypes';
-
 
 const initialState =  {
   employees:[],
-  lastEmployeeId:0,
   currentUser:{},
+  loggedUser:{},
   currentUserProjects:[],
   currentUserTasks:[],
   currentUserProjectsTasks:[]
@@ -27,156 +26,116 @@ export default (state = initialState, action) => {
   switch (action.type) {
   
     case ADD_EMPLOYEE: {
-        const {
-          data: {
-				  name,
-			      avatar,
-			      email,
-			      birthday,
-			      password,
-			      surName,
-			      positionId,
-			      position,
-			      locationId,
-			      location,
-				  skillLevelId,
-				  skillId
-          }
-        } = action;
-
-        const id = state.lastEmployeeId + 1
-
-		  const employees = [
-          ...state.employees,
-          { id, name, avatar, email, birthday, password, surName, positionId, position, locationId, location, skillLevelId, skillId}
-        ];
-
-		  return {
-          ...state,
-          employees,
-          lastEmployeeId: id
-        };
+      if (!action.payload.data) {
+		return state;
+	  }
+	  
+      const { data:currentUser } = action.payload;
+	  return { ...state, currentUser };
     }
 
-	 case SET_EMPLOYEES: {
-      const { employees } = action.data;
+	
+	case SET_EMPLOYEES: {
+	  if (!action.payload.data) {
+		return state;
+	  }
+	  const { data:employees } = action.payload;
       return { ...state, employees };
     }
 	
- 
-    case CHANGE_EMPLOYEE: {
-		const { employees } = state;
-			 
-		const {
-          data: {
-            	  id,
-				  name,
-			      avatar,
-			      email,
-			      birthday,
-			      password,
-			      surName,
-			      positionId,
-			      position,
-			      locationId,
-			      location,
-				  skillLevelId,
-				  skillId				  
-				  
-          }
-        } = action;
-
-		const newEmployee = {
-							  id,
-							  name,
-							  avatar,
-							  email,
-							  birthday,
-							  password,
-							  surName,
-							  positionId,
-							  position,
-							  locationId,
-							  location,
-				              skillLevelId,
-				              skillId							  
-		};
-			 
-		for(let i = 0; i < employees.length; i++) {
-         if(employees[i].id === action.data.id) {
-           employees[i]=newEmployee;
-           break;
-        }
-       }
-
-	   return { ...state, employees};
-  }
-  
+	
     case CHANGE_USER_SKILL: {
-		const { currentUser } = state;
-		const newSkill={
-		  id:action.data.id,
-		  name:action.data.name
-		};
+	  if (!action.payload.data) {
+		return state;
+	  }
+	  
+	  const { currentUser } = state;
+	  const newDataEmployee = action.payload.data
+		.filter(employee => parseInt(employee.id) === parseInt(currentUser.id));
+	  const newSkill={
+	    id:newDataEmployee[0].skill.id,
+	    name:newDataEmployee[0].skill.name
+	  };
+
+	  const newCurrentUser = {...currentUser,skill:newSkill};
+	  newCurrentUser.skillId = parseInt(newDataEmployee[0].skill.id);
 		
-		const newCurrentUser = {...currentUser,skill:newSkill};
-		newCurrentUser.skillId=action.data.id;
-		
-	   return { ...state, currentUser:newCurrentUser};
+	  return { ...state, currentUser:newCurrentUser};
     }
 
+	
     case CHANGE_USER_SKILL_LEVEL: {
-		const { currentUser } = state;
-		const newSkillLevel={
-		  id:action.data.id,
-		  name:action.data.name
-		};
-		
-		const newCurrentUser = {...currentUser,skillLevel:newSkillLevel};
-		newCurrentUser.skillLevelId=action.data.id;
-		
-	   return { ...state, currentUser:newCurrentUser};
-  }
- 
-  case CHANGE_USER_AVATAR: {
-		const { currentUser } = state;
-		const newAvatar=action.data.avatar;
-		
-		const newCurrentUser = {...currentUser,avatar:newAvatar};
-		
-	   return { ...state, currentUser:newCurrentUser};
-  }
- 
-  case REMOVE_EMPLOYEE: {
-    const { employees: oldEmployees } = state;
-    const { id } = action.data;
+	  if (!action.payload.data) {
+	    return state;
+	  }
+	  
+	  const { currentUser } = state;
+	  const newDataEmployee = action.payload.data
+		.filter(employee => parseInt(employee.id) === parseInt(currentUser.id));
+	  const newSkillLevel={
+	    id:newDataEmployee[0].skillLevel.id,
+	    name:newDataEmployee[0].skillLevel.name
+	  };
 
-    const employees = oldEmployees
-      .filter(employee => employee.id !== id);
+	  const newCurrentUser = {...currentUser,skillLevel:newSkillLevel};
+	  newCurrentUser.skillLevelId = parseInt(newDataEmployee[0].skillLevel.id);
+		
+	  return { ...state, currentUser:newCurrentUser};
+    }
+	
+ 
+    case CHANGE_USER_AVATAR: {
+	  if (!action.payload.data) {
+	    return state;
+	  }
+	  const { currentUser } = state;
+	  const newDataEmployee = action.payload.data
+		.filter(employee => parseInt(employee.id) === parseInt(currentUser.id));
 
-    return { ...state, employees }
-  }
+	  const newCurrentUser = {...currentUser,avatar:newDataEmployee[0].avatar};
+		
+	  return { ...state, currentUser:newCurrentUser};
+	   
+    }
+ 
   
-  case SET_CURRENT_USER: {
+    case LOAD_EMPLOYEE: {
+	  if (!action.payload.data) {
+	    return state;
+	  }
+	  
+      const { data:currentUser } = action.payload;
+	  return { ...state, currentUser };
+    }
+	
+	
+    case SET_CURRENT_USER: {
       const { currentUser } = action.data;
       return { ...state, currentUser };
-    }
+    }	
+	
+	
+    case SET_LOGGED_USER: {
+      const { loggedUser } = action.data;
+      return { ...state, loggedUser };
+    }	
+	
  
-  case SET_USER_PROJECTS: {
-      const { currentUserProjects } = action.data;
+    case SET_USER_PROJECTS: {
+	  if (!action.payload.data) {
+	    return state;
+	  }
+      const { data:currentUserProjects } = action.payload;
       return { ...state, currentUserProjects };
-  } 
+    } 
 
-  case SET_USER_TASKS: {
-      const { currentUserTasks } = action.data;
+    case SET_USER_TASKS: {
+	  if (!action.payload.data) {
+	    return state;
+	  }
+      const { data:currentUserTasks } = action.payload;
       return { ...state, currentUserTasks };
-  } 
-  
-  case SET_USER_PROJECTS_TASKS: {
-      const { currentUserProjectsTasks } = action.data;
-      return { ...state, currentUserProjectsTasks };
-  } 
-
+    } 
   
     default:
       return state

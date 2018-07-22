@@ -4,38 +4,34 @@ import UserProjectsItem from '../UserProjectsItem/UserProjectsItem.component';
 
 class UserProjects extends Component {
  
- render() {
+	render() {
 	
-	const { currentUserProjectsTasks, history } = this.props;
+	  const { currentUserProjectsTasks } = this.props;
 
-   return (
-   <div>
-   
-   {
-	  ((currentUserProjectsTasks)&&(currentUserProjectsTasks.length>0))
-	  ? <div>
-	  <ul className="projects-list">
-	  <div className="project--title">
-	    Projects
-	  </div>
-	  {currentUserProjectsTasks.map((project,index) => {
-	  return (
-		 <UserProjectsItem
-			  {...project}
+      return (
+      <div>
+
+        <div>
+	      <ul className="projects-list">
+	        <div className="project--title">
+	          Projects
+	        </div>
+	        {currentUserProjectsTasks.map((task,index) => {
+	        return (
+		      <UserProjectsItem
+			  {...task}
 			  key={index}
-             		 
-		  />
-		  )
-	  } 
-	  )}
-      </ul>
-	  </div>
-	  : null
-   }
-   </div>
-  );
+		      />
+		    )
+	        } 
+	        )}
+          </ul>
+	    </div>
 	
- }
+      </div>
+	  );
+	
+	}
  
 }
 

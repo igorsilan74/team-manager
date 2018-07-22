@@ -4,19 +4,28 @@ import { Switch, Route, Redirect, Link } from 'react-router-dom';
 import LoginForm from './components/LoginForm/LoginForm.component';
 import UserForm from './components/UserForm/UserForm.component';
 import TaskForm from './components/TaskForm/TaskForm.component';
+import EmployeeList from './components/EmployeeList/EmployeeList.component';
+import ProjectForm from './components/ProjectForm/ProjectForm.component';
+import ProjectList from './components/ProjectList/ProjectList.component';
+import ProjectTasksForm from './components/ProjectTasksForm/ProjectTasksForm.component';
+import HTML5Backend from 'react-dnd-html5-backend';
+import { DragDropContext } from 'react-dnd';
 import logo from './logo.svg';
 import './App.css';
 import { withRouter } from 'react-router';
 import { createBrowserHistory } from 'history';
 import { syncHistoryWithStore } from 'react-router-redux';
 
+
 import {
 	signin,
 	signout,
 	setCurrentUserData,
-	setUserSkillApi,
-	setUserSkillLevelApi,
-	setAvatarApi
+	setUserSkill,
+	setUserSkillLevel,
+	setAvatar,
+	setHistory
+	
 } from './redux/actions';	
 
 class App extends Component {
@@ -24,13 +33,8 @@ class App extends Component {
 	constructor(props) {
       super(props);
 	  this.checkAuth();
-	  this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
-   } 
+    } 
    
-  forceUpdateHandler = () => {
-    this.forceUpdate();
-  }
-  	
 	checkAuth = () => {
 		const { history } = this.props;
 		//for change history
@@ -51,12 +55,12 @@ class App extends Component {
     }
 	
 	onSignin = (email, password) => {
-	    const { dispatch } = this.props;
+	    const { dispatch, history } = this.props;
 		const authData = {
 						 email,
 						 password
 		};
-	    dispatch(signin(authData));
+	    dispatch(signin(authData,history));
     }
 	
 	onSignout = () => {
@@ -65,99 +69,128 @@ class App extends Component {
     }
 	
 	onSkillChange = (skillId,skillName) => {
-		const { dispatch, history, currentUser, auth_token } = this.props;
-	    dispatch(setUserSkillApi(currentUser,skillId,skillName,auth_token));
+		const { dispatch, currentUser } = this.props;
+	    dispatch(setUserSkill(currentUser,skillId,skillName));
     }
 	
 	onSkillLevelChange = (skillLevelId,skillLevelName) => {
-		const { dispatch, history, currentUser, auth_token } = this.props;
-	    dispatch(setUserSkillLevelApi(currentUser,skillLevelId,skillLevelName,auth_token));
+		const { dispatch, currentUser } = this.props;
+	    dispatch(setUserSkillLevel(currentUser,skillLevelId,skillLevelName));
     }
 	
 	onAvatarChange = (imgData) => {
-		const { dispatch, history, currentUser, auth_token } = this.props;
-	    dispatch(setAvatarApi(currentUser,imgData,auth_token));
+		const { dispatch, currentUser } = this.props;
+	    dispatch(setAvatar(currentUser,imgData));
+    }
+	
+	changeToLoggedUser = () => {
+    	const { dispatch, loggedUser } = this.props;
+    	dispatch(setCurrentUserData(loggedUser.id));
     }
 	
     componentDidMount() {
-	  const { auth_token, currentUser, dispatch } = this.props;
+		const { dispatch, history } = this.props;
+		dispatch(setHistory(history));
     }
-  
-  
-    componentDidUpdate(prevProps, prevState) {
-	   const { auth_token, history, currentUser, dispatch } = this.props;
-	   
-	   //check auth token for login page
-	   if (location.pathname.toUpperCase().includes('LOGIN')) {
-	     if (auth_token.length!==0) {
-			 if (auth_token.toUpperCase().includes('LOGIN_ERROR')) {
-				document.querySelector('#error-login--message').classList.remove('error-login--hide'); 
-			 } else {
-				 if (auth_token!==prevProps.auth_token) {
-				      if (!((Object.keys(currentUser).length === 0) && (currentUser.constructor === Object))) {
-						dispatch(setCurrentUserData(currentUser.id,auth_token));
-						history.push('/user');
-					  }
-					  
-				 }
-			 }
-	     } 
-	   }
-	   
-    }
-  
-  
   
     renderLoginForm = () =>
     <div className="App-form-area">
       <div className="form-wrapper">
         <LoginForm
-           onSignin={this.onSignin}
-		   history={this.props.history}
+          onSignin={this.onSignin}
         />
       </div>
     </div>
 	
 	renderUserForm = () => {
+	const { auth_token, currentUser } = this.props;
 
 	return (
 	
 	<div className="App-form-area">
       <div className="form-wrapper">
-	  
-		<UserForm
-		   history={this.props.history}
-		   currentUser={this.props.currentUser}
-		   currentUserProjects={this.props.currentUserProjects}
-		   currentUserTasks={this.props.currentUserTasks}
-		   currentUserProjectsTasks={this.props.currentUserProjectsTasks}
-		   skillLevels={this.props.skillLevels}
-		   skills={this.props.skills}
+	  { 
+	  ((auth_token)&&(currentUser))
+	  ?	<UserForm
 		   onSkillChange={this.onSkillChange}
 		   onSkillLevelChange={this.onSkillLevelChange}
+		   onAvatarChange={this.onAvatarChange}
         />
-	  
+	  : null
+      }
+      </div>
+    </div>
+	);
+	}
+
+
+	renderProjectForm = () => {
+	const { auth_token } = this.props;
+	
+	return (
+	
+	<div className="App-form-area">
+      <div className="form-wrapper">
+	  { 
+	  (auth_token)
+	  ?	<ProjectForm
+        />
+	  : null
+      }
+      </div>
+    </div>
+	);
+	}
+
+	
+	renderEmployeeList = () => {
+	return (	
+    <div className="App-form-area">
+      <div className="form-wrapper">
+        <EmployeeList
+        />
+      </div>
+    </div>
+    );
+	}
+	
+	renderProjectList = () => {
+	return (	
+    <div className="App-form-area">
+      <div className="form-wrapper">
+        <ProjectList
+        />
+      </div>
+    </div>
+    );
+	}
+	
+	renderTasksForm = () => {
+	return (
+	<div className="App-form-area">
+      <div className="form-wrapper">
+	  <ProjectTasksForm
+      />
       </div>
     </div>
 	);
 	}
 	
-	renderTaskForm = () =>
-    <div className="App-form-area">
+	renderTaskForm = () => {
+	return (
+	<div className="App-form-area">
       <div className="form-wrapper">
-	  
-        <TaskForm
-		   history={this.props.history}
-		   currentUser={this.props.currentUser}
-		   currentTask={this.props.currentTask}
-        />
+	  <TaskForm
+      />
       </div>
     </div>
+	);
+	}
+
 	
   render() {
 	  
 	const { auth_token } = this.props;
-	
 	
     return (
       <div className="App">
@@ -170,37 +203,38 @@ class App extends Component {
 			<div className="row">
 				<div className="col-md-2">
 				 <Link
-				   className="link--route"
-				   to="/projects"
+				  className="link--route"
+				  to="/projects"
 				 >
-				 <strong>Projects</strong>         
+				<strong>Projects</strong>         
 				</Link>
 				</div>
-				<div className="col-md-1">
+				<div className="col-md-2">
 				 <Link
-				   className="link--route"
-				   to="/employees"
+				  className="link--route"
+				  to="/employees"
 				 >
-				 <strong>Employees</strong>         
+				<strong>Employees</strong>         
 				</Link>
 				</div>
-				<div className="col-md-7"></div>
+				<div className="col-md-6"></div>
 				<div className="col-md-1">
 				<Link
-				   className="link--route"
-				   to={"/user/"+this.props.currentUser.id}
+				  className="link--route"
+				  to={"/employee/"+this.props.loggedUser.id}
+				  onClick={() => this.changeToLoggedUser()}
 				 >
-				{this.props.currentUser.name}
+				{this.props.loggedUser.name}
 				</Link>
 				</div>
 				<div className="col-md-1">
 				 <Link
-				   onClick={this.onSignout}
-				   className="link--route"
-				   to="/login"
-				   id="logout-link"
+				  onClick={this.onSignout}
+				  className="link--route"
+				  to="/login"
+				  id="logout-link"
 				 >
-				 Logout         
+				Logout         
 				</Link>
 				</div>
 		        
@@ -224,12 +258,16 @@ class App extends Component {
 			  Login
 			  </Link>
               </div>
-            } />
+            }/>
 			
             <Route path='/login' render={this.renderLoginForm} />
 			<Route path='/logout' />
-			<Route path='/user'  render={this.renderUserForm} />
-			<Route path='/task'  render={this.renderTaskForm} />
+			<Route path='/employee/'  render={this.renderUserForm} />
+			<Route exact path='/employees'  render={this.renderEmployeeList} />
+			<Route path='/project/'  render={this.renderProjectForm} />
+			<Route exact path='/projects'  render={this.renderProjectList} />
+			<Route path='/task/'  render={this.renderTaskForm} />
+			<Route exact path='/tasks'  render={this.renderTasksForm} />
 			
           </Switch>
    	
@@ -243,60 +281,22 @@ class App extends Component {
 const mapStateToProps = state => {
 	
     const {
-			auth_token,
-			isLoading,
-			locations,
-			lastLocationId,
-			skills,
-			lastSkillId,
-			skillLevels,
-			lastSkillLevelId,
-			positions,
-			lastPositionId
-	      } = state.common;
+		auth_token,
+		isLoading
+	} = state.common;
 	 
-   const {
-			employees,
-			lastEmployeeId,
-			currentUser,
-			currentUserProjects,
-			currentUserTasks,
-			currentUserProjectsTasks
-	 } = state.employee;
-	 
-   const {
-	  tasks,
-	  lastTaskId
-	 } = state.tasks;
-	 
-   const {
-	  projects,
-	  lastProjectId
-	 } = state.projects; 
+    const {
+		currentUser,
+		loggedUser
+	} = state.employee;
 	 
 	 
- return {
-       auth_token,
-	   currentUser,
-	   currentUserProjects,
-	   currentUserTasks,
-	   currentUserProjectsTasks,
-	   isLoading,
-	   employees,
-	   lastEmployeeId,
-	   tasks,
-	   lastTaskId,
-	   projects,
-	   lastProjectId,
-	   locations,
-	   lastLocationId,
-	   skills,
-	   lastSkillId,
-	   skillLevels,
-	   lastSkillLevelId,
-	   positions,
-	   lastPositionId
-};
+    return {
+    	auth_token,
+		isLoading,
+		currentUser,
+		loggedUser
+    };
 }
 
-export default withRouter(connect(mapStateToProps)(App));
+export default DragDropContext(HTML5Backend)(withRouter(connect(mapStateToProps)(App)));

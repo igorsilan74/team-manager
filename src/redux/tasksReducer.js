@@ -2,12 +2,13 @@ import {
   ADD_TASK,
   SET_TASKS,
   CHANGE_TASK,
-  REMOVE_TASK
+  LOAD_TASK,
+  SET_CURRENT_TASK
 } from './actionTypes';
 
 const initialState =  {
   tasks:[],
-  lastTaskId:0
+  currentTask:{}
 }
 
 //Reducer function
@@ -15,78 +16,43 @@ export default (state = initialState, action) => {
   switch (action.type) {
 
     case ADD_TASK: {
-        const {
-          data: {
-				  employeeId,
-			      projectId,
-			      projectName,
-			      name,
-			      description
-          }
-        } = action;
-		
-        const id = state.lastTaskId + 1
+      if (!action.payload.data) {
+	    return state;
+	  }
 
-		const tasks = [
-          ...state.tasks,
-          { id, employeeId, projectId, projectName, name, description }
-        ];
-
-		  return {
-          ...state,
-          tasks,
-          lastTaskId: id
-        };
+      const { data:currentTask } = action.payload;
+	  const tasks = [...state.tasks];
+	  tasks.push(currentTask);
+	  
+	  return { ...state, currentTask, tasks };
+    }
+	
+	
+	case LOAD_TASK: {
+	  if (!action.payload.data) {
+	    return state;
+	  }
+	  
+      const { data:currentTask } = action.payload;
+	  return { ...state, currentTask };
     }
 
-	 case SET_TASKS: {
-      const { tasks } = action.data;
+	
+	case SET_TASKS: {
+	  if (!action.payload.data) {
+        return state;
+	  }
+	  const { data:tasks } = action.payload;
       return { ...state, tasks };
     }
 	
- 
-    case CHANGE_TASK: {
-		const { tasks } = state;
-			 
-		const {
-          data: {
-            	  id,
-				  employeeId,
-			      projectId,
-			      projectName,
-			      name,
-			      description
-          }
-        } = action;
+	
+    case SET_CURRENT_TASK: {
+      const { currentTask } = action.data;
+      return { ...state, currentTask };
+    }
+	
 
-		const newTask = {
-							  id,
-							  employeeId,
-							  projectId,
-							  projectName,
-							  name,
-							  description
-		};
-			 
-		for(let i = 0; i < tasks.length; i++) {
-         if(tasks[i].id === action.data.id) {
-           tasks[i]=newTask;
-           break;
-        }
-       }
-
-	   return { ...state, tasks};
-  }
-  
-  case REMOVE_TASK: {
-    const { tasks: oldTasks } = state;
-    const { id } = action.data;
-
-    const tasks = oldTasks
-      .filter(task => task.id !== id);
-
-    return { ...state, tasks }
-  }
     default:
       return state
   }

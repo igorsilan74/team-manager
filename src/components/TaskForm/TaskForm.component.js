@@ -1,22 +1,47 @@
 import React, { Component } from 'react';
 import './TaskForm.component.css';
+import { connect } from 'react-redux';
 
 class TaskForm extends Component {
 
- render() {
+	render() {
 	
-   const { currentUser, currentTask , history } = this.props;
+      const { currentUser, currentTask  } = this.props;
 
-   return (
-    <div>
-		User-{currentUser.name}
-		<br/>
-		Task-{currentTask}
-    </div>
-  );
+      return (
+        <div>
+		  {currentTask.description+' '+currentTask.projectName.substring(0,4)+'-'+currentTask.id.substring(0,4)}
+		  <br/>
+		  {currentTask.name}
+		  <br/>
+		  {currentTask.employeeName}
+        </div>
+      );
 	
- }
+	}
  
 }
 
-export default TaskForm;
+const mapStateToProps = (state) => {
+	
+	const {
+		currentUser
+	} = state.employee;
+	
+	const {
+		currentProject
+	} = state.projects;
+	 
+	const {
+		currentTask
+	} = state.tasks;	 
+	 
+	return {
+		currentUser,
+		currentProject,
+		currentTask
+	};
+}
+
+
+export default connect(mapStateToProps)(TaskForm);

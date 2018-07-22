@@ -1,34 +1,38 @@
 ﻿import { apiUrl } from '../urls';
+import { redirectToLogin } from './actions';
 
-const axiosMiddlewareOptions = {
-  baseURL:apiUrl,
-  responseType: 'json',
-  axios: {
-    baseURL: apiUrl,
-    responseType: 'json',
-  },
-  //opt
-  options: {
+  
+  const axiosMiddlewareOptions = {
     interceptors: {
-      request: [
-        (getState, config) => {
-          alert('here');
-	  
-		   if ((getState().auth_token)&&(getState().auth_token.length>0)) {
-                        config.headers['authtoken'] = getState().auth_token
+      request: [{
+        success: function ({getState, dispatch, getSourceAction}, req) {
+		   if (getState().common.auth_token) {
+               req.headers['authtoken'] = getState().common.auth_token;
            }
-
-          return config
+		   
+          return req;
+          //...
+        },
+        error: function ({getState, dispatch, getSourceAction}, error) {
+			return error;
+          //...
         }
+      }
       ],
-      response: [
-        (getState, response) => {
-         
-          return response
+      response: [{
+        success: function ({getState, dispatch, getSourceAction}, req) {
+		  return req;
+          //...
+        },
+        error: function ({getState, dispatch, getSourceAction}, error) {
+			dispatch(redirectToLogin(getState().common.currentHistory));
+			return error;
+          //...
         }
+      }
       ]
     }
-  }
-};
-
-export default axiosMiddlewareOptions;
+  };
+  
+export default axiosMiddlewareOptions;  
+	
