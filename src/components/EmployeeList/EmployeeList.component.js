@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './EmployeeList.component.css';
 import EmployeeListItem from '../EmployeeListItem/EmployeeListItem.component';
 import { connect } from 'react-redux';
-import { modalForm } from '../../utils';
+import { modalForm, sortGrid, sortImage } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
 import { saveEmployee, deleteEmployee, setEmployees, addEmployee, deleteEmployeeStore, setCurrentUser } from '../../redux/actions';	
 import { List } from "react-virtualized";
@@ -25,7 +25,9 @@ class EmployeeList extends Component {
 		this.state = {
           birthday: ((this.props.currentUser)&&(this.props.currentUser.birthday)) 
 					? new Date(this.props.currentUser.birthday) 
-					: new Date()
+					: new Date(),
+		  sortBy:'name',
+          sortDirection:0
         }
 		
 		this.formState='';
@@ -169,6 +171,16 @@ class EmployeeList extends Component {
     }  
   
   
+    sortClick(columnName) {
+	  const { dispatch } = this.props;
+      const sortDirection = (this.state.sortBy===columnName) ? ((this.state.sortDirection+1) % 3) : 1;
+	  this.setState({sortBy:columnName, sortDirection});
+	  dispatch(setEmployees());
+      this.forceUpdateHandler();
+	}
+
+
+  
     componentWillReceiveProps(nextProps) {
 	  document.getElementById('employee-name').value=nextProps.currentUser.name;
 	  document.getElementById('positions-select').value=nextProps.currentUser.positionId;
@@ -191,10 +203,15 @@ class EmployeeList extends Component {
   
   
 	renderRow = ({ index, key, style }) => {
+	  const { employees } = this.props;	
+	  const { sortBy, sortDirection } = this.state;	
+
+	  const sortedEmployees = sortGrid([...employees],sortBy,sortDirection);
+		
 	  return (
 		<div key={key} style={style}>	
 			<EmployeeListItem
-			  {...this.props.employees[index]}
+			  {...sortedEmployees[index]}
 			  onEditShow={this.handleShow}
 			  modalConfirmShow={this.modalConfirmShow}
 			/>
@@ -394,14 +411,14 @@ class EmployeeList extends Component {
 				<li className="employees-list-item">
 				 <div id="employees-item" className="container">
 					<div className="row">
-					  <div className="col-md-4 grid">
-						 Name
+					  <div className="col-md-4 grid" onClick={() => this.sortClick('name')} >
+						 Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
 					  </div>
-					 <div className="col-md-2 grid"> 
-						 Position
+					 <div className="col-md-2 grid" onClick={() => this.sortClick('position.name')}> 
+						 Position{sortImage(this.state.sortDirection,this.state.sortBy,'position.name')}
 					 </div>
-					 <div className="col-md-2 grid"> 
-						 Location
+					 <div className="col-md-2 grid" onClick={() => this.sortClick('location.name')}> 
+						 Location{sortImage(this.state.sortDirection,this.state.sortBy,'location.name')}
 					 </div>
 					 <div className="col-md-2 grid"> 
 						 Birthday

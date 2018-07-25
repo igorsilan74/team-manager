@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './ProjectTeam.component.css';
 import ProjectTeamItem from '../ProjectTeamItem/ProjectTeamItem.component';
-import { modalConfirm, modalForm, setCurrentId, currentId } from '../../utils';
+import { modalConfirm, modalForm, setCurrentId, currentId, sortGrid, sortImage } from '../../utils';
 import { deleteProjectEmployee, addProjectEmployee, setEmployees } from '../../redux/actions';	
 import { connect } from 'react-redux';
 import { List } from "react-virtualized";
@@ -16,7 +16,13 @@ class ProjectTeam extends Component {
 		this.addEmployeeShow = this.addEmployeeShow.bind(this);	
 		this.addEmployeeClose = this.addEmployeeClose.bind(this);		
 		this.addEmployeeCloseAndSave = this.addEmployeeCloseAndSave.bind(this);		
-    	this.forceUpdateHandler = this.forceUpdateHandler.bind(this);		
+    	this.forceUpdateHandler = this.forceUpdateHandler.bind(this);	
+
+		this.state = {
+		  sortBy:'name',
+          sortDirection:0				
+        }
+		
     }
  
  
@@ -57,14 +63,27 @@ class ProjectTeam extends Component {
   
 	  modalForm('employeeModal',false);
     }
+	
+	sortClick(columnName) {
+	  const { dispatch } = this.props;
+      const sortDirection = (this.state.sortBy===columnName) ? ((this.state.sortDirection+1) % 3) : 1;
+	  this.setState({sortBy:columnName, sortDirection});
+	  dispatch(setEmployees());
+      this.forceUpdateHandler();
+	}
  
   
 	renderRow = ({ index, key, style }) => {
+	
+	const { currentProjectTeam } = this.props;	
+	const { sortBy, sortDirection } = this.state;	
+	const sortedTeam = sortGrid([...currentProjectTeam],sortBy,sortDirection);
+		
 	return (
 	  <div key={key} style={style}>	
 	
       <ProjectTeamItem
-	    {...this.props.currentProjectTeam[index]}
+	    {...sortedTeam[index]}
 	    key={index}
 	    modalConfirmShow={this.modalConfirmShow}
 	  />
@@ -149,14 +168,14 @@ class ProjectTeam extends Component {
 				<li className="projects-list-item">
 				  <div id="projects-item" className="container">
 					<div className="row">
-					  <div className="col-md-3 grid">
-					    Name
+					  <div className="col-md-3 grid" onClick={() => this.sortClick('name')}>
+					    Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
 					  </div>
-					  <div className="col-md-3 grid"> 
-					    Position
+					  <div className="col-md-3 grid" onClick={() => this.sortClick('position.name')}> 
+					    Position{sortImage(this.state.sortDirection,this.state.sortBy,'position.name')}
 					  </div>
-					  <div className="col-md-2 grid"> 
-					    Location
+					  <div className="col-md-2 grid" onClick={() => this.sortClick('location.name')}> 
+					    Location{sortImage(this.state.sortDirection,this.state.sortBy,'location.name')}
 					  </div>
 					  <div className="col-md-2 grid"> 
 					    Birthday

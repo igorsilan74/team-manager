@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './ProjectList.component.css';
 import ProjectListItem from '../ProjectListItem/ProjectListItem.component';
 import { connect } from 'react-redux';
-import { modalForm } from '../../utils';
+import { modalForm, sortGrid, sortImage } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
 import { saveProject, deleteProject, setProjects, addProject, deleteProjectStore, setCurrentProject } from '../../redux/actions';	
 import { List } from "react-virtualized";
@@ -24,7 +24,10 @@ class ProjectList extends Component {
 		this.state = {
           creationDate: ((this.props.currentProject)&&(this.props.currentProject.creationDate)) 
 					    ? new Date(this.props.currentProject.creationDate) 
-						: new Date()
+						: new Date(),
+						
+		  sortBy:'name',
+          sortDirection:0				
         }
 		
 		this.formState='';
@@ -133,13 +136,26 @@ class ProjectList extends Component {
 	onCreationDateChange = creationDate => {
 	  this.setState({ creationDate });
     }
+	
+	
+	sortClick(columnName) {
+	  const { dispatch } = this.props;
+      const sortDirection = (this.state.sortBy===columnName) ? ((this.state.sortDirection+1) % 3) : 1;
+	  this.setState({sortBy:columnName, sortDirection});
+	  dispatch(setProjects());
+      this.forceUpdateHandler();
+	}
   
   
 	renderRow = ({ index, key, style }) => {
+	  const { projects } = this.props;	
+	  const { sortBy, sortDirection } = this.state;	
+	  const sortedProjects = sortGrid([...projects],sortBy,sortDirection);
 		return (
+		
 			<div key={key} style={style}>	
 			<ProjectListItem
-			  {...this.props.projects[index]}
+			  {...sortedProjects[index]}
 			  onEditShow={this.handleShow}
 			  modalConfirmShow={this.modalConfirmShow}
 			/>
@@ -261,11 +277,11 @@ class ProjectList extends Component {
 					<li className="projects-list-item">
 					  <div id="projects-item" className="container">
 						<div className="row">
-						  <div className="col-md-4 grid">
-							 Name
+						  <div className="col-md-4 grid" onClick={() => this.sortClick('name')}>
+							 Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
 						  </div>
-						  <div className="col-md-4 grid"> 
-							 Description
+						  <div className="col-md-4 grid" onClick={() => this.sortClick('description')}> 
+							 Description{sortImage(this.state.sortDirection,this.state.sortBy,'description')}
 						  </div>
 						  <div className="col-md-2 grid"> 
 							 Creation date
