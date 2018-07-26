@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 class UserForm extends Component {
 
 	static defaultProps = {
-      imageData: 'img/Default.png'
+      imageData: '/img/Default.png'
 	};
    
   
@@ -100,7 +100,7 @@ class UserForm extends Component {
 			  id="user-img"
 			  alt={`${currentUser.name}-avatar`}
 			  className="user-image"
-			  src={currentUser.avatar || imageData }
+			  src={ currentUser.avatar || imageData }
 			  width="60px"
 			  height="60px"
 			  />

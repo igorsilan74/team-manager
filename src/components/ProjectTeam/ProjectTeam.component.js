@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './ProjectTeam.component.css';
 import ProjectTeamItem from '../ProjectTeamItem/ProjectTeamItem.component';
-import { modalConfirm, modalForm, setCurrentId, currentId, sortGrid, sortImage } from '../../utils';
+import { modalConfirm, modalForm, setCurrentId, currentId, sortGrid, sortImage, modalAddUserToProject } from '../../utils';
 import { deleteProjectEmployee, addProjectEmployee, setEmployees } from '../../redux/actions';	
 import { connect } from 'react-redux';
 import { List } from "react-virtualized";
@@ -14,7 +14,6 @@ class ProjectTeam extends Component {
 		this.confirmCloseAndDelete = this.confirmCloseAndDelete.bind(this);
 		
 		this.addEmployeeShow = this.addEmployeeShow.bind(this);	
-		this.addEmployeeClose = this.addEmployeeClose.bind(this);		
 		this.addEmployeeCloseAndSave = this.addEmployeeCloseAndSave.bind(this);		
     	this.forceUpdateHandler = this.forceUpdateHandler.bind(this);	
 
@@ -44,11 +43,6 @@ class ProjectTeam extends Component {
 	  modalForm('confirmModal',false);
 	}
   
-  
-	addEmployeeClose() {
-	  modalForm('employeeModal',false);
-	}
-
   
 	addEmployeeShow() {
 	  const { employees } = this.props;
@@ -99,16 +93,32 @@ class ProjectTeam extends Component {
 	  dispatch(setEmployees());
 	}  
 
- 
+  
+	modalBody = () => {
+	const { currentProjectTeam,employees } = this.props;
+	const currentProjectEmployeeIds=currentProjectTeam.map((employee) => {
+	  return employee.id;
+	});
+	   
+	const freeEmployees = employees.filter( employee => (!currentProjectEmployeeIds.includes(employee.id)) );
+    
+	return (	
+	      <div>
+	        Select an employee:
+			  <select id="employee-select" >
+			    {freeEmployees.map( (employee,index) => {
+				  return  <option key={index} value={employee.id} >{employee.name+' '+employee.surName}</option>
+				}
+				)}
+		      </select>
+	      </div>
+	    );			
+	}
+
+	
 	render() {
 	
-	  const { currentProjectTeam,employees } = this.props;
-	   
-	  const currentProjectEmployeeIds=currentProjectTeam.map((employee) => {
-	    return employee.id;
-	  });
-	   
-	  const freeEmployees = employees.filter( employee => (!currentProjectEmployeeIds.includes(employee.id)) );
+	  const { currentProjectTeam } = this.props;
 	   
 	  const listHeight = 495;
 	  const rowHeight = 33;
@@ -117,33 +127,7 @@ class ProjectTeam extends Component {
 	  return (
 	    <div>
 	   
-		  {/*modal add user to project*/}   
-		  <div className="modal fade" id="employeeModal"  role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-			<div className="modal-dialog" role="document">
-			<div className="modal-content">
-			  <div className="modal-header">
-				<h5 className="modal-title" id="confirmModalLabel">Add employee</h5>
-				<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-				  <span aria-hidden="true" onClick={this.addEmployeeClose}>&times;</span>
-				</button>
-			  </div>
-			  <div className="modal-body">
-			    Select an employee:
-			    <select id="employee-select" >
-				  {freeEmployees.map( (employee,index) => {
-				    return  <option key={index} value={employee.id} >{employee.name+' '+employee.surName}</option>
-				  }
-				  )}
-				</select>
-			  </div>
-			  <div className="modal-footer">
-				<button id="confirm-modal-ok" type="button" className="btn btn-primary" onClick={this.addEmployeeCloseAndSave} >OK</button>
-				<button id="confirm-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.addEmployeeClose}>CANCEL</button>
-			  </div>
-			</div>
-			</div>
-		  </div>
-	   
+	      {modalAddUserToProject(this.addEmployeeCloseAndSave,this.modalBody())}
 	      {modalConfirm(this.confirmCloseAndDelete)}
 
 		  <div>

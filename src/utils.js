@@ -1,4 +1,5 @@
 ﻿import React, { Component } from 'react'; 
+import DateTimePicker from 'react-datetime-picker';
 
 export let currentId;
 
@@ -55,10 +56,6 @@ export const modalForm = (formName,isHide=false) => {
   }
  }	
 
-const confirmClose = () => {
-  modalForm('confirmModal',false);
-}
- 
 export const sortImage = (sortDirection,sortBy,columnName) => {
   return (	
     ((sortDirection>0)&&(sortBy===columnName))
@@ -72,6 +69,10 @@ export const sortImage = (sortDirection,sortBy,columnName) => {
 	: null
   );
 }
+
+const modalClose = (name) => {
+  modalForm(name,false);
+}
  
 export const modalConfirm = (confirmCloseAndDelete) => {
   return (
@@ -82,7 +83,7 @@ export const modalConfirm = (confirmCloseAndDelete) => {
       <div className="modal-header">
         <h5 className="modal-title" id="confirmModalLabel">Confirm</h5>
         <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true" onClick={confirmClose}>&times;</span>
+          <span aria-hidden="true" onClick={() => modalClose('confirmModal')}>&times;</span>
         </button>
       </div>
       <div className="modal-body">
@@ -90,10 +91,318 @@ export const modalConfirm = (confirmCloseAndDelete) => {
       </div>
       <div className="modal-footer">
         <button id="confirm-modal-ok" type="button" className="btn btn-primary" onClick={confirmCloseAndDelete} >OK</button>
-		<button id="confirm-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={confirmClose}>CANCEL</button>
+		<button id="confirm-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => modalClose('confirmModal')}>CANCEL</button>
       </div>
     </div>
     </div>
   </div>
   );
- }
+}
+
+export const modalAddUserToProject = (addEmployeeCloseAndSave,body) => {
+    return (
+		  <div className="modal fade" id="employeeModal"  role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+			<div className="modal-dialog" role="document">
+			<div className="modal-content">
+			  <div className="modal-header">
+				<h5 className="modal-title" id="confirmModalLabel">Add employee</h5>
+				<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true" onClick={() => modalClose('employeeModal')}>&times;</span>
+				</button>
+			  </div>
+			  <div className="modal-body">
+			    {body}
+			  </div>
+			  <div className="modal-footer">
+				<button id="confirm-modal-ok" type="button" className="btn btn-primary" onClick={addEmployeeCloseAndSave} >OK</button>
+				<button id="confirm-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => modalClose('employeeModal')}>CANCEL</button>
+			  </div>
+			</div>
+			</div>
+		  </div>
+    );
+}
+ 
+export const modalEditProject = (projectEditCloseAndSave) => {
+    return (
+ 
+		<div className="modal fade" id="editProjectModal"  role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+		  <div className="modal-dialog" role="document">
+		  <div className="modal-content">
+			<div className="modal-header">
+			  <h5 className="modal-title" id="editProjectModalLabel">Edit</h5>
+			  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true" onClick={() => modalClose('editProjectModal')}>&times;</span>
+			  </button>
+			</div>
+			<div className="modal-body">
+			  <div id="projects-item" className="container">
+				  
+				<div className="row">
+				  <div className="col-md-2">
+					<label>Name:</label>
+				  </div>
+				  <div className="col-md-10">
+					<input id="project-name" type="text" placeholder="Enter project name" size="50"></input><br/>
+				  </div>
+				</div>  
+
+				<div className="row">
+				  <div className="col-md-2">
+					<label>Description:</label>
+				  </div>
+				  <div className="col-md-10">
+					<input id="project-description" type="text" placeholder="Enter project description" size="50"></input><br/>
+				  </div>
+				</div>  
+				
+			  </div> 
+			</div>
+			<div className="modal-footer">
+			  <button id="project-modal-ok" type="button" className="btn btn-primary" onClick={projectEditCloseAndSave} >OK</button>
+			  <button id="project-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => modalClose('editProjectModal')}>CANCEL</button>
+			</div>
+		  </div>
+		  </div>
+		</div>
+ 
+    );
+} 
+ 
+ 
+export const modalEditTask = (taskEditCloseAndSave,body) => {
+    return (
+ 
+		<div className="modal fade" id="editTaskModal"  role="dialog" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+		  <div className="modal-dialog" role="document">
+		  <div className="modal-content">
+			<div className="modal-header">
+			  <h5 className="modal-title" id="editTaskModalLabel">Edit</h5>
+			  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true" onClick={() => modalClose('editTaskModal')}>&times;</span>
+			  </button>
+			</div>
+			<div className="modal-body">
+			  <div id="projects-item" className="container">
+					
+				<div className="row">
+				  <div className="col-md-2">
+				    <label>Select an employee:</label>
+				  </div>
+				  <div className="col-md-10">
+					{body}
+				  </div>
+				</div>
+					
+				<div className="row">
+				  <div className="col-md-2">
+				    <label>Name:</label>
+				  </div>
+				  <div className="col-md-10">
+				    <input id="task-name" type="text" placeholder="Enter task name" size="50"></input><br/>
+				  </div>
+				</div>  
+
+				<div className="row">
+				  <div className="col-md-2">
+				    <label>Description:</label>
+				  </div>
+				  <div className="col-md-10">
+				    <input id="task-description" type="text" placeholder="Enter task description" size="50"></input><br/>
+				  </div>
+				</div>  
+				
+			  </div> 
+			</div>
+			<div className="modal-footer">
+			  <button id="project-modal-ok" type="button" className="btn btn-primary" onClick={taskEditCloseAndSave} >OK</button>
+			  <button id="project-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => modalClose('editTaskModal')}>CANCEL</button>
+			</div>
+		  </div>
+		  </div>
+		</div>
+
+    );
+}
+
+
+export const modalEditProjectFull = (handleCloseAndSave,onCreationDateChange,creationDate) => {
+    return (
+ 
+        <div className="modal fade" id="editProjectModal"  role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+			<div className="modal-dialog" role="document">
+			<div className="modal-content">
+			  <div className="modal-header">
+				<h5 className="modal-title" id="editProjectModalLabel">Edit</h5>
+				<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true" onClick={() => modalClose('editProjectModal')}>&times;</span>
+				</button>
+			</div>
+			<div className="modal-body">
+			   
+			  <div id="projects-item" className="container">
+			  <div className="row">
+				<div className="col-md-2">
+				  <label>Name:</label>
+				</div>
+				  
+				<div className="col-md-10">
+				  <input id="project-name" type="text" placeholder="Enter project name" size="50"></input><br/>
+				</div>
+			  </div>  
+
+			  <div className="row">
+			    <div className="col-md-2">
+				  <label>Description:</label>
+				</div>
+				  
+				<div className="col-md-10">
+				  <input id="project-description" type="text" placeholder="Enter project description" size="50"></input><br/>
+				</div>
+			  </div>  
+				  
+			  <div className="row">
+			    <div className="col-md-2">
+				  <label>Creation date:</label>
+				</div>
+				  
+				<div className="col-md-10">
+				  <DateTimePicker
+				  id='dtpCreationDate'
+				  onChange={onCreationDateChange}
+				  value={creationDate}
+				  />
+				 </div>
+			  </div>
+				
+			  </div> 
+			</div>
+			<div className="modal-footer">
+			  <button id="project-modal-ok" type="button" className="btn btn-primary" onClick={handleCloseAndSave} >OK</button>
+			  <button id="project-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => modalClose('editProjectModal')}>CANCEL</button>
+			</div>
+			</div>
+			</div>
+	    </div>
+    );
+}
+ 
+ 
+export const modalEditEmployee = (handleCloseAndSave,skillLevels,skills,positions,locations,onBirthdayChange,birthday) => {
+   return (
+
+	  <div className="modal fade" id="editEmployeeModal"  role="dialog" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+		<div className="modal-dialog" role="document">
+		<div className="modal-content">
+		  <div className="modal-header">
+			<h5 className="modal-title" id="editEmployeeModalLabel">Edit</h5>
+			<button type="button" className="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true" onClick={() => modalClose('editEmployeeModal')}>&times;</span>
+			</button>
+		  </div>
+		  <div className="modal-body">
+		   
+			<div id="employees-item" className="container">
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Name:</label>
+			  </div>
+			  
+			  <div className="col-md-10">
+				<input id="employee-name" type="text" placeholder="Enter you name" size="50"></input><br/>
+			  </div>
+			</div>  
+
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Surname:</label>
+			  </div>
+			  
+			  <div className="col-md-10">
+				<input id="employee-surname" type="text" placeholder="Enter you surname" size="50"></input><br/>
+			  </div>
+			</div>  
+
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Email:</label>
+			  </div>
+			  
+			  <div className="col-md-10">
+				<input id="employee-email" type="text" placeholder="Enter you email" size="50"></input><br/>
+			  </div>
+			</div>  
+			
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Password:</label>
+			  </div>
+			  
+			  <div className="col-md-10">
+				<input id="employee-password" type="password" placeholder="Enter you password" size="50"></input><br/>
+			  </div>
+			</div>  
+			
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Birthday:</label>
+			  </div>
+			  
+			  <div className="col-md-10">
+				 <DateTimePicker
+				  id='dtpBirthday'
+				  onChange={onBirthdayChange}
+				  value={birthday}
+				 />
+			  </div>
+			</div>
+			
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Skill level:</label>
+			  </div>
+			  <div className="col-md-10">
+				{skillLevels}
+			  </div>
+			</div>  
+
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Skill:</label>
+			  </div>
+			  <div className="col-md-10">
+                {skills}
+			  </div>
+			</div> 		
+
+
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Position:</label>
+			  </div>
+			  <div className="col-md-10">
+				{positions}
+			  </div>
+			</div>  
+
+			<div className="row">
+			  <div className="col-md-2">
+				<label>Location:</label>
+			  </div>
+			  <div className="col-md-10">
+				 {locations}
+			  </div>
+			</div>  
+
+			</div> 
+		  </div>
+		  <div className="modal-footer">
+			<button id="employee-modal-ok" type="button" className="btn btn-primary" onClick={handleCloseAndSave} >OK</button>
+			<button id="employee-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => modalClose('editEmployeeModal')}>CANCEL</button>
+		  </div>
+		</div>
+		</div>
+	  </div>
+
+	);
+} 

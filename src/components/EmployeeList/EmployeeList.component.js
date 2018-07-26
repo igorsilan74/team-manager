@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import './EmployeeList.component.css';
 import EmployeeListItem from '../EmployeeListItem/EmployeeListItem.component';
 import { connect } from 'react-redux';
-import { modalForm, sortGrid, sortImage } from '../../utils';
-import DateTimePicker from 'react-datetime-picker';
+import { modalForm, sortGrid, sortImage, modalEditEmployee, modalConfirm  } from '../../utils';
 import { saveEmployee, deleteEmployee, setEmployees, addEmployee, deleteEmployeeStore, setCurrentUser } from '../../redux/actions';	
 import { List } from "react-virtualized";
 
@@ -13,10 +12,8 @@ class EmployeeList extends Component {
 	constructor(props) {
 		super(props);
     	this.handleShow = this.handleShow.bind(this);
-		this.handleClose = this.handleClose.bind(this);
 		this.handleCloseAndSave = this.handleCloseAndSave.bind(this);
     	this.modalConfirmShow = this.modalConfirmShow.bind(this);
-		this.confirmClose = this.confirmClose.bind(this);
 		this.confirmCloseAndDelete = this.confirmCloseAndDelete.bind(this);
 		
 		this.addEmployeeShow = this.addEmployeeShow.bind(this);
@@ -45,11 +42,6 @@ class EmployeeList extends Component {
     }		
 	
 	
-	handleClose() {
-	  modalForm('editEmployeeModal',false);
-    }
-  
-  
 	handleCloseAndSave() {
 		const { dispatch,currentUser } = this.props;
 
@@ -144,11 +136,6 @@ class EmployeeList extends Component {
     }
 
 	
-	confirmClose() {
-	  modalForm('confirmModal',false);
-    }
-
-	
 	modalConfirmShow() {
       modalForm('confirmModal',true);
     }
@@ -218,11 +205,64 @@ class EmployeeList extends Component {
 		</div>
 	  );
     }
+	
+	modalSkillLevels() {
+	  const { skillLevels } = this.props;
 
+	  return (	
+	      <select id="skill-level-select" >
+			  {skillLevels.map( (level,index) => {
+			    return  <option key={index} value={level.id} >{level.name}</option>
+			  }
+			  )}
+		  </select>
+	    );			
+	}
+	
+	modalSkills() {
+	  const { skills } = this.props;
+
+	  return  (	
+	      <select id="skill-select" >
+		    {skills.map( (skill,index) => {
+			  return  <option key={index} value={skill.id} >{skill.name}</option>
+			}
+			)}
+		   </select>
+	    );			
+	}
+	
+	modalPositions() {
+	    const { positions } = this.props;
+
+	    return (	
+	      <select id="positions-select" >
+		    {positions.map( (position,index) => {
+			  return  <option key={index} value={position.id} >{position.name}</option>
+			}
+			)}
+		  </select>
+	    );			
+	}
+
+
+	modalLocations() {
+	  const { locations } = this.props;
+
+	  return (	
+          <select id="locations-select" >
+		    {locations.map( (location,index) => {
+		      return  <option key={index} value={location.id} >{location.name}</option>
+			}
+			)}
+		  </select>
+	    );			
+	}
+	
  
 	render() {
 	
-	  const { employees,positions,locations,currentUser,skillLevels, skills } = this.props;
+	  const { employees } = this.props;
 
 	  const listHeight = 495;
       const rowHeight = 33;
@@ -231,161 +271,10 @@ class EmployeeList extends Component {
       return (
 	  <div>
    
-	  {/*modal edit*/}   
-	  <div className="modal fade" id="editEmployeeModal"  role="dialog" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
-		<div className="modal-dialog" role="document">
-		<div className="modal-content">
-		  <div className="modal-header">
-			<h5 className="modal-title" id="editEmployeeModalLabel">Edit</h5>
-			<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true" onClick={this.handleClose}>&times;</span>
-			</button>
-		  </div>
-		  <div className="modal-body">
-		   
-			<div id="employees-item" className="container">
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Name:</label>
-			  </div>
-			  
-			  <div className="col-md-10">
-				<input id="employee-name" type="text" placeholder="Enter you name" size="50"></input><br/>
-			  </div>
-			</div>  
-
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Surname:</label>
-			  </div>
-			  
-			  <div className="col-md-10">
-				<input id="employee-surname" type="text" placeholder="Enter you surname" size="50"></input><br/>
-			  </div>
-			</div>  
-
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Email:</label>
-			  </div>
-			  
-			  <div className="col-md-10">
-				<input id="employee-email" type="text" placeholder="Enter you email" size="50"></input><br/>
-			  </div>
-			</div>  
-			
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Password:</label>
-			  </div>
-			  
-			  <div className="col-md-10">
-				<input id="employee-password" type="password" placeholder="Enter you password" size="50"></input><br/>
-			  </div>
-			</div>  
-			
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Birthday:</label>
-			  </div>
-			  
-			  <div className="col-md-10">
-				 <DateTimePicker
-				  id='dtpBirthday'
-				  onChange={this.onBirthdayChange}
-				  value={this.state.birthday}
-				 />
-			  </div>
-			</div>
-			
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Skill level:</label>
-			  </div>
-			  <div className="col-md-10">
-				<select id="skill-level-select" >
-				 {skillLevels.map( (level,index) => {
-				   return  <option key={index} value={level.id} >{level.name}</option>
-				 }
-				 )}
-				</select>
-			  </div>
-			</div>  
-
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Skill:</label>
-			  </div>
-			  <div className="col-md-10">
-				 <select id="skill-select" >
-					 {skills.map( (skill,index) => {
-					   return  <option key={index} value={skill.id} >{skill.name}</option>
-					 }
-					 )}
-				 </select>
-			  </div>
-			</div> 		
-
-
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Position:</label>
-			  </div>
-			  <div className="col-md-10">
-				<select id="positions-select" >
-				 {positions.map( (position,index) => {
-				   return  <option key={index} value={position.id} >{position.name}</option>
-				 }
-				 )}
-				</select>
-			  </div>
-			</div>  
-
-			<div className="row">
-			  <div className="col-md-2">
-				<label>Location:</label>
-			  </div>
-			  <div className="col-md-10">
-				 <select id="locations-select" >
-					 {locations.map( (location,index) => {
-					   return  <option key={index} value={location.id} >{location.name}</option>
-					 }
-					 )}
-				 </select>
-			  </div>
-			</div>  
-
-			</div> 
-		  </div>
-		  <div className="modal-footer">
-			<button id="employee-modal-ok" type="button" className="btn btn-primary" onClick={this.handleCloseAndSave} >OK</button>
-			<button id="employee-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleClose}>CANCEL</button>
-		  </div>
-		</div>
-		</div>
-	  </div>
-
-
-	  {/*modal confirm*/}   
-	  <div className="modal fade" id="confirmModal"  role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-		<div className="modal-dialog" role="document">
-		<div className="modal-content">
-		  <div className="modal-header">
-			<h5 className="modal-title" id="confirmModalLabel">Confirm</h5>
-			<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-			  <span aria-hidden="true" onClick={this.confirmClose}>&times;</span>
-			</button>
-		  </div>
-		  <div className="modal-body">
-			<label>Are you realy want to delete record?</label>
-		  </div>
-		  <div className="modal-footer">
-			<button id="confirm-modal-ok" type="button" className="btn btn-primary" onClick={this.confirmCloseAndDelete} >OK</button>
-			<button id="confirm-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.confirmClose}>CANCEL</button>
-		  </div>
-		</div>
-		</div>
-	  </div>
+      {modalEditEmployee(this.handleCloseAndSave,this.modalSkillLevels(),this.modalSkills(),
+	  this.modalPositions(),this.modalLocations(),this.onBirthdayChange,this.state.birthday)}
+	  
+	  {modalConfirm(this.confirmCloseAndDelete)}
 	  
 
 	  {/*employee list*/}   

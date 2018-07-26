@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './ProjectTasksForm.component.css';
 import { Link } from 'react-router-dom';
-import { formatDate } from '../../utils';
+import { formatDate, modalEditProject, modalEditTask } from '../../utils';
 import { connect } from 'react-redux';
 import { List } from "react-virtualized";
 import { DropTarget } from 'react-dnd';
@@ -16,11 +16,9 @@ class ProjectTasksForm extends Component {
     	this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
 		
 		this.projectEditShow = this.projectEditShow.bind(this);
-		this.projectEditClose = this.projectEditClose.bind(this);
 		this.projectEditCloseAndSave = this.projectEditCloseAndSave.bind(this);
 		
 		this.taskEditShow = this.taskEditShow.bind(this);
-		this.taskEditClose = this.taskEditClose.bind(this);
 		this.taskEditCloseAndSave = this.taskEditCloseAndSave.bind(this);		
     }
 
@@ -46,11 +44,6 @@ class ProjectTasksForm extends Component {
 	}	 
 
 	
-	projectEditClose() {
-	  modalForm('editProjectModal',false);
-	}
-  
-  
 	projectEditCloseAndSave() {
       const { dispatch,currentProject } = this.props;
 	
@@ -72,11 +65,6 @@ class ProjectTasksForm extends Component {
 	  modalForm('editTaskModal',true);
 	}	 
   
-  
-	taskEditClose() {
-	  modalForm('editTaskModal',false);
-	}
-
 	
 	taskEditCloseAndSave() {
       const { dispatch,currentProject } = this.props;
@@ -98,7 +86,18 @@ class ProjectTasksForm extends Component {
 	  this.forceUpdateHandler();
  	  modalForm('editTaskModal',false);
 	}
-		
+	
+	modalBody() {
+	  const { employees } = this.props;
+	  return (	
+	      <select id="employee-select" >
+		    {employees.map( (employee,index) => {
+			  return  <option key={index} value={employee.id} >{employee.name+' '+employee.surName}</option>
+			}
+			)}
+		  </select>
+	    );			
+	}
 
 	render() {
       const { currentProject, currentProjectTasks, dispatch, employees } = this.props;
@@ -120,104 +119,10 @@ class ProjectTasksForm extends Component {
 	  return (
 	  
 	    <div>
+		
+		  {modalEditProject(this.projectEditCloseAndSave)}
+		  {modalEditTask(this.taskEditCloseAndSave,this.modalBody())}	
 
-		  {/*modal edit project*/}   
-		  <div className="modal fade" id="editProjectModal"  role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
-		  <div className="modal-dialog" role="document">
-		  <div className="modal-content">
-			<div className="modal-header">
-			  <h5 className="modal-title" id="editProjectModalLabel">Edit</h5>
-			  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true" onClick={this.projectEditClose}>&times;</span>
-			  </button>
-			</div>
-			<div className="modal-body">
-			  <div id="projects-item" className="container">
-				  
-				<div className="row">
-				  <div className="col-md-2">
-					<label>Name:</label>
-				  </div>
-				  <div className="col-md-10">
-					<input id="project-name" type="text" placeholder="Enter project name" size="50"></input><br/>
-				  </div>
-				</div>  
-
-				<div className="row">
-				  <div className="col-md-2">
-					<label>Description:</label>
-				  </div>
-				  <div className="col-md-10">
-					<input id="project-description" type="text" placeholder="Enter project description" size="50"></input><br/>
-				  </div>
-				</div>  
-				
-			  </div> 
-			</div>
-			<div className="modal-footer">
-			  <button id="project-modal-ok" type="button" className="btn btn-primary" onClick={this.projectEditCloseAndSave} >OK</button>
-			  <button id="project-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.projectEditClose}>CANCEL</button>
-			</div>
-		  </div>
-		  </div>
-		  </div>
-
-		  {/*modal add task*/}   
-		  <div className="modal fade" id="editTaskModal"  role="dialog" aria-labelledby="editTaskModalLabel" aria-hidden="true">
-		  <div className="modal-dialog" role="document">
-		  <div className="modal-content">
-			<div className="modal-header">
-			  <h5 className="modal-title" id="editTaskModalLabel">Edit</h5>
-			  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true" onClick={this.taskEditClose}>&times;</span>
-			  </button>
-			</div>
-			<div className="modal-body">
-			  <div id="projects-item" className="container">
-					
-				<div className="row">
-				  <div className="col-md-2">
-				    <label>Select an employee:</label>
-				  </div>
-				  <div className="col-md-10">
-					<select id="employee-select" >
-					  {employees.map( (employee,index) => {
-						return  <option key={index} value={employee.id} >{employee.name+' '+employee.surName}</option>
-					  }
-					  )}
-					</select>
-				  </div>
-				</div>
-					
-				<div className="row">
-				  <div className="col-md-2">
-				    <label>Name:</label>
-				  </div>
-				  <div className="col-md-10">
-				    <input id="task-name" type="text" placeholder="Enter task name" size="50"></input><br/>
-				  </div>
-				</div>  
-
-				<div className="row">
-				  <div className="col-md-2">
-				    <label>Description:</label>
-				  </div>
-				  <div className="col-md-10">
-				    <input id="task-description" type="text" placeholder="Enter task description" size="50"></input><br/>
-				  </div>
-				</div>  
-				
-			  </div> 
-			</div>
-			<div className="modal-footer">
-			  <button id="project-modal-ok" type="button" className="btn btn-primary" onClick={this.taskEditCloseAndSave} >OK</button>
-			  <button id="project-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.taskEditClose}>CANCEL</button>
-			</div>
-		  </div>
-		  </div>
-		  </div>
-
-		  
 		  <div className="container">
 
 		    <div className="row">

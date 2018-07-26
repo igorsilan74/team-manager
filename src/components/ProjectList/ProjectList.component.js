@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './ProjectList.component.css';
 import ProjectListItem from '../ProjectListItem/ProjectListItem.component';
 import { connect } from 'react-redux';
-import { modalForm, sortGrid, sortImage } from '../../utils';
+import { modalForm, sortGrid, sortImage, modalConfirm, modalEditProjectFull } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
 import { saveProject, deleteProject, setProjects, addProject, deleteProjectStore, setCurrentProject } from '../../redux/actions';	
 import { List } from "react-virtualized";
@@ -13,10 +13,8 @@ class ProjectList extends Component {
 	constructor(props) {
 		super(props);
     	this.handleShow = this.handleShow.bind(this);
-		this.handleClose = this.handleClose.bind(this);
 		this.handleCloseAndSave = this.handleCloseAndSave.bind(this);
     	this.modalConfirmShow = this.modalConfirmShow.bind(this);
-		this.confirmClose = this.confirmClose.bind(this);
 		this.confirmCloseAndDelete = this.confirmCloseAndDelete.bind(this);
 		this.addProjectShow = this.addProjectShow.bind(this);
     	this.forceUpdateHandler = this.forceUpdateHandler.bind(this);
@@ -44,11 +42,6 @@ class ProjectList extends Component {
     }	
 	
 	
-	handleClose() {
-	  modalForm('editProjectModal',false);
-    }
-  
-  
 	handleCloseAndSave() {
       const { dispatch,currentProject } = this.props;
 	  const isoDate=new Date(this.state.creationDate).toISOString();
@@ -94,11 +87,6 @@ class ProjectList extends Component {
     }	
 
 
-	confirmClose() {
-	  modalForm('confirmModal',false);
-    }
-
-	
 	modalConfirmShow() {
       modalForm('confirmModal',true);
     }
@@ -175,87 +163,10 @@ class ProjectList extends Component {
 
       return (
         <div>
-	   
-	      {/*modal edit*/}   
-	   
-		  <div className="modal fade" id="editProjectModal"  role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
-			<div className="modal-dialog" role="document">
-			<div className="modal-content">
-			  <div className="modal-header">
-				<h5 className="modal-title" id="editProjectModalLabel">Edit</h5>
-				<button type="button" className="close" data-dismiss="modal" aria-label="Close">
-				  <span aria-hidden="true" onClick={this.handleClose}>&times;</span>
-				</button>
-			</div>
-			<div className="modal-body">
-			   
-			  <div id="projects-item" className="container">
-			  <div className="row">
-				<div className="col-md-2">
-				  <label>Name:</label>
-				</div>
-				  
-				<div className="col-md-10">
-				  <input id="project-name" type="text" placeholder="Enter project name" size="50"></input><br/>
-				</div>
-			  </div>  
 
-			  <div className="row">
-			    <div className="col-md-2">
-				  <label>Description:</label>
-				</div>
-				  
-				<div className="col-md-10">
-				  <input id="project-description" type="text" placeholder="Enter project description" size="50"></input><br/>
-				</div>
-			  </div>  
-				  
-			  <div className="row">
-			    <div className="col-md-2">
-				  <label>Creation date:</label>
-				</div>
-				  
-				<div className="col-md-10">
-				  <DateTimePicker
-				  id='dtpCreationDate'
-				  onChange={this.onCreationDateChange}
-				  value={this.state.creationDate}
-				  />
-				 </div>
-			  </div>
-				
-			  </div> 
-			</div>
-			<div className="modal-footer">
-			  <button id="project-modal-ok" type="button" className="btn btn-primary" onClick={this.handleCloseAndSave} >OK</button>
-			  <button id="project-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.handleClose}>CANCEL</button>
-			</div>
-			</div>
-			</div>
-	      </div>
-
-
-	      {/*modal confirm*/}   
-	      <div className="modal fade" id="confirmModal"  role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
-		    <div className="modal-dialog" role="document">
-		    <div className="modal-content">
-		      <div className="modal-header">
-			    <h5 className="modal-title" id="confirmModalLabel">Confirm</h5>
-			    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-			      <span aria-hidden="true" onClick={this.confirmClose}>&times;</span>
-			    </button>
-		      </div>
-		      <div className="modal-body">
-			    <label>Are you realy want to delete record?</label>
-		      </div>
-		      <div className="modal-footer">
-			    <button id="confirm-modal-ok" type="button" className="btn btn-primary" onClick={this.confirmCloseAndDelete} >OK</button>
-			    <button id="confirm-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={this.confirmClose}>CANCEL</button>
-		      </div>
-		    </div>
-		    </div>
-	      </div>
-	  
+ 		  {modalEditProjectFull(this.handleCloseAndSave,this.onCreationDateChange,this.state.creationDate)}
+          {modalConfirm(this.confirmCloseAndDelete)}
+	     
 	      {/*projects list*/}   
 		    <div className="container">
 			  <div className="row">
