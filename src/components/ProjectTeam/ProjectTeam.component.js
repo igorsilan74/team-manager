@@ -95,8 +95,8 @@ class ProjectTeam extends Component {
 
   
 	modalBody = () => {
-	const { currentProjectTeam,employees } = this.props;
-	const currentProjectEmployeeIds=currentProjectTeam.map((employee) => {
+	  const { currentProjectTeam,employees } = this.props;
+	  const currentProjectEmployeeIds=currentProjectTeam.map((employee) => {
 	  return employee.id;
 	});
 	   
