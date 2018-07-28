@@ -20,101 +20,96 @@ import {
 
 describe('employeesUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(employeesUrl()).toEqual(`${apiUrl}/employees`);
+    expect(`${apiUrl}`+employeesUrl()).toEqual(`${apiUrl}/employees`);
   });
 });
 
+
 describe('employeeUrl', () => {
     it('should return url with apiUrl and index', () => {
-      expect(employeeUrl(3)).toEqual(`${apiUrl}/employee/3`);
+      expect(`${apiUrl}`+employeeUrl(3)).toEqual(`${apiUrl}/employees/3`);
     });
 });
 
 
 describe('employeeProjectsUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(employeeProjectsUrl(3)).toEqual(`${apiUrl}/employees/3/projects`);
+    expect(`${apiUrl}`+employeeProjectsUrl(3)).toEqual(`${apiUrl}/employees/3/projects`);
   });
 });
 
 
 describe('employeeTasksUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(employeeTasksUrl(3)).toEqual(`${apiUrl}/employees/3/tasks`);
+    expect(`${apiUrl}`+employeeTasksUrl(3)).toEqual(`${apiUrl}/employees/3/tasks`);
   });
 });
 
 
 describe('skillLevelsUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(skillLevelsUrl()).toEqual(`${apiUrl}/skillLevels`);
+    expect(`${apiUrl}`+skillLevelsUrl()).toEqual(`${apiUrl}/skillLevels`);
   });
 });
 
 
 describe('skillsUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(skillsUrl()).toEqual(`${apiUrl}/skills`);
+    expect(`${apiUrl}`+skillsUrl()).toEqual(`${apiUrl}/skills`);
   });
 });
 
 describe('positionsUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(positionsUrl()).toEqual(`${apiUrl}/positions`);
+    expect(`${apiUrl}`+positionsUrl()).toEqual(`${apiUrl}/positions`);
   });
 });
 
 
 describe('locationsUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(locationsUrl()).toEqual(`${apiUrl}/locations`);
+    expect(`${apiUrl}`+locationsUrl()).toEqual(`${apiUrl}/locations`);
   });
 });
 
 
 describe('projectsUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(projectsUrl()).toEqual(`${apiUrl}/projects`);
+    expect(`${apiUrl}`+projectsUrl()).toEqual(`${apiUrl}/projects`);
   });
 });
 
 
 describe('projectUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(projectUrl(3)).toEqual(`${apiUrl}/project/3`);
+    expect(`${apiUrl}`+projectUrl(3)).toEqual(`${apiUrl}/projects/3`);
   });
 });
 
 
 describe('tasksUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(tasksUrl()).toEqual(`${apiUrl}/tasks`);
+    expect(`${apiUrl}`+tasksUrl()).toEqual(`${apiUrl}/tasks`);
   });
 });
 
 
 describe('projectEmployeesUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(projectEmployeesUrl(3)).toEqual(`${apiUrl}/projects/3/employees`);
+    expect(`${apiUrl}`+projectEmployeesUrl(3)).toEqual(`${apiUrl}/projects/3/employees`);
   });
 });
 
 
 describe('projectTasksUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(projectTasksUrl(3)).toEqual(`${apiUrl}/projects/3/tasks`);
+    expect(`${apiUrl}`+projectTasksUrl(3)).toEqual(`${apiUrl}/projects/3/tasks`);
   });
 });
 
 
 describe('projectEmployeeUrl', () => {
   it('should return url with apiUrl', () => {
-    expect(projectEmployeeUrl(3,1)).toEqual(`${apiUrl}/projects/3/employees/1`);
+    expect(`${apiUrl}`+projectEmployeeUrl(3,1)).toEqual(`${apiUrl}/projects/3/employees/1`);
   });
 });
-
-
-
-
-
-
