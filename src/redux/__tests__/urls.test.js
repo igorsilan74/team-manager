@@ -26,9 +26,9 @@ describe('employeesUrl', () => {
 
 
 describe('employeeUrl', () => {
-    it('should return url with apiUrl and index', () => {
-      expect(`${apiUrl}`+employeeUrl(3)).toEqual(`${apiUrl}/employees/3`);
-    });
+  it('should return url with apiUrl and index', () => {
+    expect(`${apiUrl}`+employeeUrl(3)).toEqual(`${apiUrl}/employees/3`);
+  });
 });
 
 

@@ -9,7 +9,7 @@ import {
   SET_HISTORY,
   LOAD,
   REQUEST_FAIL
- } from './actionTypes';
+} from './actionTypes';
 
 const initialState =  {
   auth_token:'',
@@ -24,72 +24,72 @@ const initialState =  {
 //Reducer function
 export default (state = initialState, action) => {
   switch (action.type) {
-  
-    //common  
-	case SET_TOKEN: {
-      const { auth_token } = action.data;
-      return { ...state, auth_token };
-    }
-	
-	case SET_ISLOADING: {
-	  const { isLoading } = action.data;	
-	  return {...state,isLoading} 
-	} 
-	
-	case LOAD: {
-	  return state; 
-    }
-  
-	case REQUEST_FAIL: {
-	  return state; 
-    }
-  
-	case SET_HISTORY: {
-      const { history } = action.data;
-      return { ...state, currentHistory:history };
-    }
-  
-    //location
-	
-	case SET_LOCATIONS: {
-	  if (!action.payload.data) {
-		return state;
-	  }			
-      const { data:locations } = action.payload;
-      return { ...state, locations };
-    }
-	
-    //skillLevels
-	
-	case SET_SKILL_LEVELS: {
-      if (!action.payload.data) {
-		return state;
-	  }
-      const { data:skillLevels } = action.payload;
-      return { ...state, skillLevels };
-    }
- 
-    //skills
- 
-	case SET_SKILLS: {
-	  if (!action.payload.data) {
-		return state;
-	  }
-      const { data:skills } = action.payload;
-      return { ...state, skills };
-    }
 
-    //positions
+  //common  
+  case SET_TOKEN: {
+    const { auth_token } = action.data;
+    return { ...state, auth_token };
+  }
 
-	case SET_POSITIONS: {
-	  if (!action.payload.data) {
-		return state;
-	  }		
-      const { data:positions } = action.payload;
-      return { ...state, positions };
+  case SET_ISLOADING: {
+    const { isLoading } = action.data;	
+    return {...state,isLoading} 
+  } 
+
+  case LOAD: {
+    return state; 
+  }
+
+  case REQUEST_FAIL: {
+    return state; 
+  }
+
+  case SET_HISTORY: {
+    const { history } = action.data;
+    return { ...state, currentHistory:history };
+  }
+
+  //location
+
+  case SET_LOCATIONS: {
+    if (!action.payload.data) {
+      return state;
+    }			
+    const { data:locations } = action.payload;
+    return { ...state, locations };
+  }
+
+  //skillLevels
+
+  case SET_SKILL_LEVELS: {
+    if (!action.payload.data) {
+      return state;
     }
+    const { data:skillLevels } = action.payload;
+    return { ...state, skillLevels };
+  }
 
-    default:
-      return state
+  //skills
+
+  case SET_SKILLS: {
+    if (!action.payload.data) {
+      return state;
+    }
+    const { data:skills } = action.payload;
+    return { ...state, skills };
+  }
+
+  //positions
+
+  case SET_POSITIONS: {
+    if (!action.payload.data) {
+      return state;
+    }		
+    const { data:positions } = action.payload;
+    return { ...state, positions };
+  }
+
+  default:
+    return state
   }
 }

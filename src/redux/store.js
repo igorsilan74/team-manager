@@ -8,12 +8,12 @@ import axiosMiddleware from 'redux-axios-middleware';
 import axios from 'axios';
 import { apiUrl } from '../urls';
 
-		
+
 const logMiddleware = store => next => action => {
-	if (action.type) {
-	  console.log(action.type);
-	}
-	next(action);
+  if (action.type) {
+    console.log(action.type);
+  }
+  next(action);
 }
 
 
@@ -23,7 +23,7 @@ const client = axios.create({
 });
 
 const store = createStore(
-rootReducer,
+  rootReducer,
   compose(
     applyMiddleware(thunk,logMiddleware,axiosMiddleware(client,axiosMiddlewareOptions))
   )
