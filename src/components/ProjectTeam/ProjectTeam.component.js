@@ -61,6 +61,9 @@ sortClick(columnName) {
   this.forceUpdateHandler();
 }
 
+componentWillReceiveProps(nextProps) {
+  this.forceUpdateHandler();
+}
 
 renderRow = ({ index, key, style }) => {
 

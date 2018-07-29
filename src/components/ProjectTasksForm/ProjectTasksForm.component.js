@@ -81,6 +81,10 @@ taskEditCloseAndSave = () => {
   modalForm('editTaskModal',false);
 }
 
+componentWillReceiveProps(nextProps) {
+  this.forceUpdateHandler();
+}
+
 modalBody() {
   const { employees } = this.props;
   return (	
