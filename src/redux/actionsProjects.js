@@ -2,7 +2,7 @@
   SET_PROJECT_TASKS_STORE,
   DELETE_PROJECT_STORE,
   SET_CURRENT_PROJECT,
-  
+  UPDATE_PROJECT_STORE  
 } from './actionTypes';
 
 import { 
@@ -152,4 +152,14 @@ export const setProjects = () => {
       }
     }
   }
+}
+
+export const updateProjectStore = (project) => {
+  return {
+    type: UPDATE_PROJECT_STORE,
+    data:{
+      project
+    }
+  }
+
 }

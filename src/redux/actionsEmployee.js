@@ -1,7 +1,8 @@
 ﻿import { 
   SET_CURRENT_USER,
   SET_LOGGED_USER,
-  DELETE_EMPLOYEE_STORE
+  DELETE_EMPLOYEE_STORE,
+  UPDATE_EMPLOYEE_STORE,
 } from './actionTypes';
 
 
@@ -162,3 +163,14 @@ export const deleteEmployeeStore = (id) => {
   }
 
 }
+
+export const updateEmployeeStore = (employee) => {
+  return {
+    type: UPDATE_EMPLOYEE_STORE,
+    data:{
+      employee
+    }
+  }
+
+}
+

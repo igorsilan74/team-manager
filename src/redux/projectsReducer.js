@@ -10,7 +10,8 @@ import {
   ADD_PROJECT_EMPLOYEE,
   SET_PROJECT_TASKS_STORE,
   ADD_PROJECT_TASK,
-  DELETE_PROJECT_STORE
+  DELETE_PROJECT_STORE,
+  UPDATE_PROJECT_STORE
 } from './actionTypes';
 
 const initialState =  {
@@ -139,6 +140,23 @@ export default (state = initialState, action) => {
     return { ...state, currentProjectTasks };
   }
 
+
+  case UPDATE_PROJECT_STORE: {
+    const { project } = action.data;
+    const projects = [...state.projects];
+
+    if (projects.length>0) {
+      for (let i=0;i<projects.length;i++) {
+        if (projects[i].id===project.id) {
+		  projects[i] = project ;
+          break;
+        }
+      }
+    }
+
+    return { ...state, projects };
+  }
+  
 
   default:
     return state

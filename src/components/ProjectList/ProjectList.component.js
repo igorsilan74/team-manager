@@ -4,7 +4,7 @@ import ProjectListItem from '../ProjectListItem/ProjectListItem.component';
 import { connect } from 'react-redux';
 import { modalForm, sortGrid, sortImage, modalConfirm, modalEditProjectFull } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
-import { saveProject, deleteProject, setProjects, addProject, deleteProjectStore, setCurrentProject } from '../../redux/actionsProjects';	
+import { saveProject, deleteProject, setProjects, addProject, deleteProjectStore, setCurrentProject, updateProjectStore } from '../../redux/actionsProjects';	
 import { List } from "react-virtualized";
 
 
@@ -48,17 +48,19 @@ handleCloseAndSave = () => {
       creationDate:isoDate
     };
 
+    dispatch(updateProjectStore(changedProject));	
     dispatch(saveProject(changedProject));
+	
   } else {
     const newProject={
       name:document.getElementById('project-name').value,
       description:document.getElementById('project-description').value,
       creationDate:isoDate
     };
-    dispatch(addProject(newProject));	
+    dispatch(addProject(newProject));
+    dispatch(setProjects());	
   }	
 
-  dispatch(setProjects());
   dispatch(setCurrentProject(currentProject));
   this.forceUpdateHandler();
   modalForm('editProjectModal',false);
@@ -111,7 +113,7 @@ componentWillReceiveProps(nextProps) {
       ?  new Date(nextProps.currentProject.creationDate) 
       : new Date()
   });
-
+  this.forceUpdateHandler();
 }
 
 

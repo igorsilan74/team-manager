@@ -10,7 +10,8 @@ import {
   CHANGE_USER_AVATAR,
   LOAD_EMPLOYEE,
   SET_LOGGED_USER,
-  DELETE_EMPLOYEE_STORE
+  DELETE_EMPLOYEE_STORE,
+  UPDATE_EMPLOYEE_STORE,
 } from './actionTypes';
 
 const initialState =  {
@@ -153,7 +154,22 @@ export default (state = initialState, action) => {
 
     return { ...state, employees };
   }
+  
+  case UPDATE_EMPLOYEE_STORE: {
+    const { employee } = action.data;
+    const employees = [...state.employees];
 
+    if (employees.length>0) {
+      for (let i=0;i<employees.length;i++) {
+        if (employees[i].id===employee.id) {
+		  employees[i] = employee ;
+          break;
+        }
+      }
+    }
+    return { ...state, employees };
+  }
+  
   default:
     return state
   }

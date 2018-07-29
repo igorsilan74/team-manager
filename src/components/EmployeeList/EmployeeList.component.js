@@ -3,7 +3,15 @@ import './EmployeeList.component.css';
 import EmployeeListItem from '../EmployeeListItem/EmployeeListItem.component';
 import { connect } from 'react-redux';
 import { modalForm, sortGrid, sortImage, modalEditEmployee, modalConfirm  } from '../../utils';
-import { saveEmployee, deleteEmployee, setEmployees, addEmployee, deleteEmployeeStore, setCurrentUser } from '../../redux/actionsEmployee';	
+import { 
+  saveEmployee,
+  deleteEmployee,
+  setEmployees,
+  addEmployee,
+  deleteEmployeeStore,
+  setCurrentUser,
+  updateEmployeeStore
+} from '../../redux/actionsEmployee';	
 import { List } from "react-virtualized";
 
 
@@ -78,6 +86,7 @@ class EmployeeList extends Component {
 
       };
 
+	  dispatch(updateEmployeeStore(changedEmployee));	  
       dispatch(saveEmployee(changedEmployee));
 
     } else {
@@ -88,16 +97,24 @@ class EmployeeList extends Component {
         birthday:isoBirthday,
         password: document.getElementById('employee-password').value,
         surName: document.getElementById('employee-surname').value,  
-        positionId:document.getElementById('positions-select').value,
-        locationId:document.getElementById('locations-select').value,
+        positionId:positionSelect.value,
+        position:{
+          id:positionSelect.value,
+          name:positionSelect.options[positionSelect.selectedIndex].innerHTML
+        },
+        locationId:locationSelect.value,
+        location:{
+          id:locationSelect.value,
+          name:locationSelect.options[locationSelect.selectedIndex].innerHTML
+        },
         skillLevelId:document.getElementById('skill-level-select').value,
         skillId:document.getElementById('skill-select').value
-      };	
-      dispatch(addEmployee(newEmployee));	
+      };
 
+      dispatch(addEmployee(newEmployee));
+	  dispatch(setEmployees(newEmployee));	  
     }
 
-    dispatch(setEmployees());
     dispatch(setCurrentUser(currentUser));
     this.forceUpdateHandler();
     modalForm('editEmployeeModal',false);
@@ -173,7 +190,10 @@ class EmployeeList extends Component {
     document.getElementById('employee-password').value=nextProps.currentUser.password;
     document.getElementById('employee-surname').value=nextProps.currentUser.surName;
     document.getElementById('skill-level-select').value=nextProps.currentUser.skillLevelId;
-    document.getElementById('skill-select').value=nextProps.currentUser.skillId;	 	
+    document.getElementById('skill-select').value=nextProps.currentUser.skillId;
+
+    this.forceUpdateHandler();
+
   }
 
 
