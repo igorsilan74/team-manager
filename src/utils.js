@@ -288,7 +288,7 @@ export const modalEditProjectFull = (handleCloseAndSave,onCreationDateChange,cre
 }
 
 
-export const modalEditEmployee = (handleCloseAndSave,skillLevels,skills,positions,locations,onBirthdayChange,birthday) => {
+export const modalEditEmployee = (handleCloseAndSave,onBirthdayChange,handleChange,form,skillLevels,skills,positions,locations) => {
   return (
 
     <div className="modal fade" id="editEmployeeModal"  role="dialog" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
@@ -309,7 +309,7 @@ export const modalEditEmployee = (handleCloseAndSave,skillLevels,skills,position
                 </div>
 
                 <div className="col-md-10">
-                  <input id="employee-name" type="text" placeholder="Enter you name" size="50"></input><br/>
+                  <input name="employeeName" type="text" placeholder="Enter you name" size="50" value={form.employeeName} onChange={handleChange}></input><br/>
                 </div>
               </div>  
 
@@ -319,7 +319,7 @@ export const modalEditEmployee = (handleCloseAndSave,skillLevels,skills,position
                 </div>
 
                 <div className="col-md-10">
-                  <input id="employee-surname" type="text" placeholder="Enter you surname" size="50"></input><br/>
+                  <input name="surName" type="text" placeholder="Enter you surname" size="50" value={form.surName} onChange={handleChange}></input><br/>
                 </div>
               </div>  
 
@@ -329,7 +329,7 @@ export const modalEditEmployee = (handleCloseAndSave,skillLevels,skills,position
                 </div>
 
                 <div className="col-md-10">
-                  <input id="employee-email" type="text" placeholder="Enter you email" size="50"></input><br/>
+                  <input name="email" type="text" placeholder="Enter you email" size="50" value={form.email} onChange={handleChange}></input><br/>
                 </div>
               </div>  
 
@@ -339,7 +339,7 @@ export const modalEditEmployee = (handleCloseAndSave,skillLevels,skills,position
                 </div>
 
                 <div className="col-md-10">
-                  <input id="employee-password" type="password" placeholder="Enter you password" size="50"></input><br/>
+                  <input name="password" type="password" placeholder="Enter you password" size="50" value={form.password} onChange={handleChange}></input><br/>
                 </div>
               </div>  
 
@@ -352,7 +352,7 @@ export const modalEditEmployee = (handleCloseAndSave,skillLevels,skills,position
                   <DateTimePicker
                     id='dtpBirthday'
                     onChange={onBirthdayChange}
-                    value={birthday}
+                    value={form.birthday}
                   />
                 </div>
               </div>

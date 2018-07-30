@@ -21,11 +21,26 @@ class EmployeeList extends Component {
     super(props);
 
     this.state = {
-      birthday: ((this.props.currentUser)&&(this.props.currentUser.birthday)) 
-        ? new Date(this.props.currentUser.birthday) 
-        : new Date(),
+      
       sortBy:'name',
-      sortDirection:0
+      sortDirection:0,
+	  
+	  form: {
+        employeeName: "",
+        positionId:-1,
+        position:"",
+        locationId:-1,
+        location:"",
+        skillLevelId:-1,
+        skillLevel:"",
+        skillId:-1,
+        skill:"",
+        email:"",
+        password:"",
+        surName:"",
+        birthday: new Date()
+      }
+	
     }
 
     this.formState='';
@@ -46,42 +61,38 @@ class EmployeeList extends Component {
   handleCloseAndSave = () => {
     const { dispatch,currentUser } = this.props;
 
-    const positionSelect=document.getElementById('positions-select');
-    const locationSelect=document.getElementById('locations-select');
-    const skillLevelSelect=document.getElementById('skill-level-select');
-    const skillSelect=document.getElementById('skill-select');
-    const isoBirthday=new Date(this.state.birthday).toISOString();
+    const isoBirthday=new Date(this.state.form.birthday).toISOString();
 
     if (this.formState.includes('EDIT')) {
       const changedEmployee={
         ...currentUser,
-        name:document.getElementById('employee-name').value,
+        name:this.state.form.employeeName,
         birthday:isoBirthday,
-        positionId:positionSelect.value,
+        positionId:this.state.form.positionId,
         position:{
-          id:positionSelect.value,
-          name:positionSelect.options[positionSelect.selectedIndex].innerHTML
+          id:this.state.form.positionId,
+          name:this.state.form.position
         },
-        locationId:locationSelect.value,
+        locationId:this.state.form.locationId,
         location:{
-          id:locationSelect.value,
-          name:locationSelect.options[locationSelect.selectedIndex].innerHTML
+          id:this.state.form.locationId,
+          name:this.state.form.location
         },
 
-        email: document.getElementById('employee-email').value,
-        password: document.getElementById('employee-password').value,
-        surName: document.getElementById('employee-surname').value,
+        email: this.state.form.email,
+        password: this.state.form.password,
+        surName: this.state.form.surName,
 
-        skillLevelId:skillLevelSelect.value,
+        skillLevelId:this.state.form.skillLevelId,
         skillLevel:{
-          id:skillLevelSelect.value,
-          name:skillLevelSelect.options[skillLevelSelect.selectedIndex].innerHTML
+          id:this.state.form.skillLevelId,
+          name:this.state.form.skillLevel
         },
 
-        skillId:skillSelect.value,
+        skillId:this.state.form.skillId,
         skill:{
-          id:skillSelect.value,
-          name:skillSelect.options[skillSelect.selectedIndex].innerHTML
+          id:this.state.form.skillId,
+          name:this.state.form.skill
         }
 
       };
@@ -91,24 +102,24 @@ class EmployeeList extends Component {
 
     } else {
       const newEmployee={
-        name:document.getElementById('employee-name').value,
+        name:this.state.form.employeeName,
         avatar: '',
-        email: document.getElementById('employee-email').value,
+        email: this.state.form.email,
         birthday:isoBirthday,
-        password: document.getElementById('employee-password').value,
-        surName: document.getElementById('employee-surname').value,  
-        positionId:positionSelect.value,
+        password: this.state.form.password,
+        surName: this.state.form.surName,
+        positionId:this.state.form.positionId,
         position:{
-          id:positionSelect.value,
-          name:positionSelect.options[positionSelect.selectedIndex].innerHTML
+          id:this.state.form.positionId,
+          name:this.state.form.position
         },
-        locationId:locationSelect.value,
+        locationId:this.state.form.locationId,
         location:{
-          id:locationSelect.value,
-          name:locationSelect.options[locationSelect.selectedIndex].innerHTML
+          id:this.state.form.locationId,
+          name:this.state.form.location
         },
-        skillLevelId:document.getElementById('skill-level-select').value,
-        skillId:document.getElementById('skill-select').value
+        skillLevelId:this.state.form.skillLevelId,
+        skillId:this.state.form.skillId,
       };
 
       dispatch(addEmployee(newEmployee));
@@ -126,22 +137,55 @@ class EmployeeList extends Component {
     this.setFormState('EDIT');  
     modalForm('editEmployeeModal',true);
   }	
+  
+  handleChange = e => {
+    const { name, value } = e.target;
+	
+    this.setState( prevState => ({
+      form: {
+        ...prevState.form,
+        [name]: value,
+      }
+    }));
 
+  };
+  
+  handleChangeSelect = e => {
+    const { name, value } = e.target;
+    const selectedText=e.target.options[e.target.selectedIndex].innerHTML;
+    this.setState( prevState => ({
+      form: {
+        ...prevState.form,
+        [name+'Id']: value,
+        [name]: selectedText
+      }
+    }));
+
+  };  
 
   addEmployeeShow = () => {
     const { dispatch } = this.props;
     this.setFormState('ADD');
 
-    document.getElementById('employee-name').value='';
-    document.getElementById('positions-select').value=0;
-    document.getElementById('locations-select').value=0;
-    this.setState({ birthday: new Date() });
-    document.getElementById('employee-email').value='';
-    document.getElementById('employee-password').value='';
-    document.getElementById('employee-surname').value='';
-    document.getElementById('skill-level-select').value=0;
-    document.getElementById('skill-select').value=0;	 	
-
+    this.setState( prevState => ({
+      form: {
+        ...prevState.form,
+        employeeName: '',
+        positionId: 0,
+        position: '',
+        locationId: 0,
+        location: '',
+        email: '',
+        password: '',
+        surName: '',
+        skillLevelId: 0,
+        skillLevel: '',
+        skillId: 0,
+        skill: '',
+        birthday: new Date()
+      }
+    }));
+	
     modalForm('editEmployeeModal',true);
   }
 
@@ -177,28 +221,40 @@ class EmployeeList extends Component {
   }
 
 
-
   componentWillReceiveProps(nextProps) {
-    document.getElementById('employee-name').value=nextProps.currentUser.name;
-    document.getElementById('positions-select').value=nextProps.currentUser.positionId;
-    document.getElementById('locations-select').value=nextProps.currentUser.locationId;
-    this.setState({
-      birthday: new Date(nextProps.currentUser.birthday)
-    });
 
-    document.getElementById('employee-email').value=nextProps.currentUser.email;
-    document.getElementById('employee-password').value=nextProps.currentUser.password;
-    document.getElementById('employee-surname').value=nextProps.currentUser.surName;
-    document.getElementById('skill-level-select').value=nextProps.currentUser.skillLevelId;
-    document.getElementById('skill-select').value=nextProps.currentUser.skillId;
-
+    this.setState( prevState => ({
+      form: {
+        ...prevState.form,
+        employeeName: nextProps.currentUser.name,
+        positionId: nextProps.currentUser.positionId,
+        position: nextProps.currentUser.position.name,
+        locationId: nextProps.currentUser.locationId,
+        location: nextProps.currentUser.location.name,
+        email: nextProps.currentUser.email,
+        password: nextProps.currentUser.password,
+        surName: nextProps.currentUser.surName,
+        skillLevelId: nextProps.currentUser.skillLevelId,
+        skillLevel: nextProps.currentUser.skillLevel.name,
+        skillId: nextProps.currentUser.skillId,
+        skill: nextProps.currentUser.skill.name,
+        birthday: new Date(nextProps.currentUser.birthday)
+      }
+    }));
+    
     this.forceUpdateHandler();
 
   }
-
+  
 
   onBirthdayChange = birthday => {
-    this.setState({ birthday });
+	
+    this.setState( prevState => ({
+      form: {
+        ...prevState.form,
+        birthday,
+      }
+    }));
   }
 
 
@@ -223,7 +279,7 @@ modalSkillLevels() {
   const { skillLevels } = this.props;
 
   return (	
-    <select id="skill-level-select" >
+    <select name="skillLevel" value={this.state.form.skillLevelId} onChange={this.handleChangeSelect} >
       {skillLevels.map( (level,index) => {
         return  <option key={index} value={level.id} >{level.name}</option>
       }
@@ -236,7 +292,7 @@ modalSkills() {
   const { skills } = this.props;
 
   return  (	
-    <select id="skill-select" >
+    <select name="skill" value={this.state.form.skillId} onChange={this.handleChangeSelect} >
       {skills.map( (skill,index) => {
         return  <option key={index} value={skill.id} >{skill.name}</option>
       }
@@ -249,7 +305,7 @@ modalPositions() {
   const { positions } = this.props;
 
   return (	
-    <select id="positions-select" >
+    <select name="position" value={this.state.form.positionId} onChange={this.handleChangeSelect} >
       {positions.map( (position,index) => {
         return  <option key={index} value={position.id} >{position.name}</option>
       }
@@ -263,7 +319,7 @@ modalLocations() {
   const { locations } = this.props;
 
   return (	
-    <select id="locations-select" >
+    <select name="location" value={this.state.form.locationId} onChange={this.handleChangeSelect} >
       {locations.map( (location,index) => {
         return  <option key={index} value={location.id} >{location.name}</option>
       }
@@ -284,8 +340,16 @@ render() {
   return (
     <div>
 
-      {modalEditEmployee(this.handleCloseAndSave,this.modalSkillLevels(),this.modalSkills(),
-        this.modalPositions(),this.modalLocations(),this.onBirthdayChange,this.state.birthday)}
+      {modalEditEmployee(
+        this.handleCloseAndSave,
+        this.onBirthdayChange,
+        this.handleChange,
+        this.state.form,
+        this.modalSkillLevels(),
+        this.modalSkills(),
+        this.modalPositions(),
+        this.modalLocations()
+      )}
 
       {modalConfirm(this.confirmCloseAndDelete)}
 
