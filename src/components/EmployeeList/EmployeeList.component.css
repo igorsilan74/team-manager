@@ -1,13 +1,16 @@
 .title-employee-list {
-	font-size: 1.6em;
+	font-size: 1.2em;
 	text-align:left;
+	padding-top:5px;
 }
+
 
 .employee-list {
 	list-style-type: none; 
 	padding-left:0px;
 	margin-left:20px;
 	width: 1100px  !important;
+	
 }
 
 .row {

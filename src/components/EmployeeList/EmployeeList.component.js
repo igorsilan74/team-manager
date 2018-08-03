@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './EmployeeList.component.css';
 import EmployeeListItem from '../EmployeeListItem/EmployeeListItem.component';
 import { connect } from 'react-redux';
-import { modalForm, sortGrid, sortImage, modalEditEmployee, modalConfirm  } from '../../utils';
+import { modalForm, sortGrid, sortImage, modalEditEmployee, modalConfirm } from '../../utils';
 import { 
   saveEmployee,
   deleteEmployee,
@@ -12,7 +12,7 @@ import {
   setCurrentUser,
   updateEmployeeStore
 } from '../../redux/actionsEmployee';	
-import { List } from "react-virtualized";
+import { List, ScrollSync } from "react-virtualized";
 
 
 class EmployeeList extends Component {
@@ -68,14 +68,14 @@ class EmployeeList extends Component {
         ...currentUser,
         name:this.state.form.employeeName,
         birthday:isoBirthday,
-        positionId:this.state.form.positionId,
+        positionId:this.state.form.positionId.toString(),
         position:{
-          id:this.state.form.positionId,
+          id:this.state.form.positionId.toString(),
           name:this.state.form.position
         },
-        locationId:this.state.form.locationId,
+        locationId:this.state.form.locationId.toString(),
         location:{
-          id:this.state.form.locationId,
+          id:this.state.form.locationId.toString(),
           name:this.state.form.location
         },
 
@@ -83,15 +83,15 @@ class EmployeeList extends Component {
         password: this.state.form.password,
         surName: this.state.form.surName,
 
-        skillLevelId:this.state.form.skillLevelId,
+        skillLevelId:this.state.form.skillLevelId.toString(),
         skillLevel:{
-          id:this.state.form.skillLevelId,
+          id:this.state.form.skillLevelId.toString(),
           name:this.state.form.skillLevel
         },
 
-        skillId:this.state.form.skillId,
+        skillId:this.state.form.skillId.toString(),
         skill:{
-          id:this.state.form.skillId,
+          id:this.state.form.skillId.toString(),
           name:this.state.form.skill
         }
 
@@ -108,25 +108,24 @@ class EmployeeList extends Component {
         birthday:isoBirthday,
         password: this.state.form.password,
         surName: this.state.form.surName,
-        positionId:this.state.form.positionId,
+        positionId:this.state.form.positionId.toString(),
         position:{
-          id:this.state.form.positionId,
+          id:this.state.form.positionId.toString(),
           name:this.state.form.position
         },
-        locationId:this.state.form.locationId,
+        locationId:this.state.form.locationId.toString(),
         location:{
-          id:this.state.form.locationId,
+          id:this.state.form.locationId.toString(),
           name:this.state.form.location
         },
-        skillLevelId:this.state.form.skillLevelId,
-        skillId:this.state.form.skillId,
+        skillLevelId:this.state.form.skillLevelId.toString(),
+        skillId:this.state.form.skillId.toString(),
       };
 
       dispatch(addEmployee(newEmployee));
 	  dispatch(setEmployees(newEmployee));	  
     }
 
-    dispatch(setCurrentUser(currentUser));
     this.forceUpdateHandler();
     modalForm('editEmployeeModal',false);
 
@@ -186,6 +185,7 @@ class EmployeeList extends Component {
       }
     }));
 	
+    this.forceUpdateHandler();
     modalForm('editEmployeeModal',true);
   }
 
@@ -222,26 +222,27 @@ class EmployeeList extends Component {
 
 
   componentWillReceiveProps(nextProps) {
-
-    this.setState( prevState => ({
-      form: {
-        ...prevState.form,
-        employeeName: nextProps.currentUser.name,
-        positionId: nextProps.currentUser.positionId,
-        position: nextProps.currentUser.position.name,
-        locationId: nextProps.currentUser.locationId,
-        location: nextProps.currentUser.location.name,
-        email: nextProps.currentUser.email,
-        password: nextProps.currentUser.password,
-        surName: nextProps.currentUser.surName,
-        skillLevelId: nextProps.currentUser.skillLevelId,
-        skillLevel: nextProps.currentUser.skillLevel.name,
-        skillId: nextProps.currentUser.skillId,
-        skill: nextProps.currentUser.skill.name,
-        birthday: new Date(nextProps.currentUser.birthday)
-      }
-    }));
-    
+    if (!(Object.keys(nextProps.currentUser).length === 0 && nextProps.currentUser.constructor === Object)) {
+      console.log(nextProps.currentUser);
+	  this.setState( prevState => ({
+        form: {
+          ...prevState.form,
+          employeeName: nextProps.currentUser.name,
+          positionId: nextProps.currentUser.positionId,
+          position: nextProps.currentUser.position.name,
+          locationId: nextProps.currentUser.locationId,
+          location: nextProps.currentUser.location.name,
+          email: nextProps.currentUser.email,
+          password: nextProps.currentUser.password,
+          surName: nextProps.currentUser.surName,
+          skillLevelId: nextProps.currentUser.skillLevelId,
+          skillLevel: nextProps.currentUser.skillLevel.name,
+          skillId: nextProps.currentUser.skillId,
+          skill: nextProps.currentUser.skill.name,
+          birthday: new Date(nextProps.currentUser.birthday)
+        }
+      }));
+    }
     this.forceUpdateHandler();
 
   }
@@ -258,10 +259,13 @@ class EmployeeList extends Component {
   }
 
 
-renderRow = ({ index, key, style }) => {
+renderRow = ( propsRender ) => {
+  
+  const { index, key, style } = propsRender;
+   
   const { employees } = this.props;	
   const { sortBy, sortDirection } = this.state;	
-
+  
   const sortedEmployees = sortGrid([...employees],sortBy,sortDirection);
 
   return (
@@ -333,7 +337,7 @@ render() {
 
   const { employees } = this.props;
 
-  const listHeight = 495;
+  const listHeight = 350;
   const rowHeight = 33;
   const rowWidth = 1100;
 
@@ -358,7 +362,7 @@ render() {
 
       <div className="container">
         <div className="row">
-          <div className="title-employee-list col-md-2">
+          <div className="title-employee-list col-md-1">
             Employees
           </div>
           <div id="btnAddEmployee" className="col-md-3">
@@ -400,16 +404,17 @@ render() {
               </div>	 
             </li>
           </div>	 
-
+          
           <List
             {...this.props}
-            width={rowWidth}
+            width={employees.length >10 ? rowWidth+17 : rowWidth} 
             height={listHeight}
             rowHeight={rowHeight}
             rowRenderer={this.renderRow}
-            rowCount={employees.length} />
-        </div>
-
+            rowCount={employees.length} 
+		  />
+	 </div>
+          
 
       </ul>
     </div>

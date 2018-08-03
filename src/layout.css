@@ -1,0 +1,83 @@
+﻿body {
+  background: #f5f5f5;
+  color: #000000;
+  font-family: Arial, Times New Roman;
+  font-size: 16px;
+}
+
+#app-content {
+  background-image: url('/img/back.jpg');
+  margin:0px;
+  width: 100vw;
+  height: 100vh;
+}
+
+.content--wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+} 
+
+#app-header-container {
+  height: 70px;
+  width:100%;
+  opacity:1;
+}
+
+.main--block {
+  position: absolute;
+  top: 70px; 
+  left: 0;
+  right: 0;
+  bottom: 40px;
+}
+
+.main--wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+} 
+
+#app-menu {
+  background:#e6f2ff;
+  float: left;
+  width:6%;
+  height:100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding-left:0px;
+  padding-right:0px;
+  padding-top:10px;
+  padding-bottom:10px;
+}
+
+.app-menu-row {
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+#main-content {
+  float: right;
+  width:94%;
+  height:100%;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  padding: 15px 20px;
+  border: 2px solid #999;
+}
+
+#clear {
+  clear:both;
+}
+
+#footer {
+  background: #e6f2ff;
+  height: 40px;
+  width:100%;
+  position: absolute;
+  left: 0;
+  bottom: 0px;
+}

@@ -41,11 +41,16 @@ class TaskTarget extends Component {
 
   render() {
 
-    const { tasks, connectDropTarget } = this.props;
+    const { tasks, connectDropTarget, heightTarget, typeTask } = this.props;
+    const borderWidth = (typeTask===0) ? 0 : 1;
+    const style = {
+      height: heightTarget+'px',
+	  borderLeft: borderWidth+'px solid black'
+    };
 
     return connectDropTarget(
 
-      <div className="box-target">
+      <div className="box-target" style={style} >
         {
           tasks.map((task,index) => {
             return (
@@ -53,6 +58,7 @@ class TaskTarget extends Component {
                 {...task}
                 task={task}
                 key={index}
+                heightTarget={heightTarget}
               />
             )
           } 

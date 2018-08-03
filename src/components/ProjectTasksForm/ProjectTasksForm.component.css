@@ -12,6 +12,13 @@
 	display:block !important;
 }
 
+/*
 .task-column {
 	 border-left: 1px solid black;
+}
+*/
+
+.todos-content {
+	height:350px;
+	overflow: auto;
 }

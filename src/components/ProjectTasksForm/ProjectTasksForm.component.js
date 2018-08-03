@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { List } from "react-virtualized";
 import { DropTarget } from 'react-dnd';
 import TaskTarget from '../TaskTarget/TaskTarget.component';
-import   { saveProject, setProjectTasksStore } from '../../redux/actionsProjects';
+import   { saveProject, setProjectTasksStore, updateProjectStore, loadProject } from '../../redux/actionsProjects';
 import   { saveTask, addTask } from '../../redux/actionsTasks';
 import { modalForm } from '../../utils';
 
@@ -14,6 +14,24 @@ class ProjectTasksForm extends Component {
 
   constructor(props) {
     super(props);
+	
+    this.state = {
+	  
+	  projectForm: {
+	    projectName:'',
+        description:'',
+        creationDate:new Date()
+	  },
+	  
+	  taskForm: {
+	    taskName:'',
+        taskDescription:'',
+        employeeId:-1,
+        employeeName:''
+	  }
+	  
+    }
+	
   }
 
 
@@ -31,31 +49,80 @@ onDrop = (newTask) => {
 
 
 projectEditShow = () => {
-  const { currentProject } = this.props;
-  document.getElementById('project-name').value=currentProject.name;
-  document.getElementById('project-description').value=currentProject.description;
+  const { currentProject } = this.props;	
+  
+  this.setState( prevState => ({
+    projectForm: {
+      ...prevState.projectForm,
+      projectName: currentProject.name,
+      description: currentProject.description,
+      creationDate: new Date(currentProject.creationDate) 
+    }
+  }));
+  
+  this.forceUpdateHandler();	
+	
   modalForm('editProjectModal',true);
 }	 
 
 
 projectEditCloseAndSave = () => {
   const { dispatch,currentProject } = this.props;
-
+  const isoDate=new Date(this.state.projectForm.creationDate).toISOString();
+  
   const changedProject={
     ...currentProject,
-    name:document.getElementById('project-name').value,
-    description:document.getElementById('project-description').value
+    name:this.state.projectForm.projectName,
+    description:this.state.projectForm.description,
+    creationDate:isoDate
   };
 
+  dispatch(updateProjectStore(changedProject));	
   dispatch(saveProject(changedProject));
+  dispatch(loadProject(changedProject.id));
+  
+  this.forceUpdateHandler();
   modalForm('editProjectModal',false);
 
 }
 
+handleChangeProjectForm = e => {
+  const { name, value } = e.target;
+  this.setState( prevState => ({
+    projectForm: {
+      ...prevState.projectForm,
+      [name]: value,
+    }
+  }));
+
+};
+
+handleChangeTaskForm = e => {
+  const { name, value } = e.target;
+	
+  this.setState( prevState => ({
+    taskForm: {
+      ...prevState.taskForm,
+      [name]: value,
+    }
+  }));
+
+};
+
 
 taskEditShow = () => {
-  document.getElementById('task-name').value='';
-  document.getElementById('task-description').value='';
+  
+  this.setState( prevState => ({
+    taskForm: {
+      ...prevState.taskForm,
+      taskName: '',
+      taskDescription: '',
+      employeeId: -1,
+      employeeName: ''
+    }
+  }));
+  
+  this.forceUpdateHandler();
   modalForm('editTaskModal',true);
 }	 
 
@@ -63,15 +130,13 @@ taskEditShow = () => {
 taskEditCloseAndSave = () => {
   const { dispatch,currentProject } = this.props;
 
-  const employeeSelect = document.getElementById('employee-select');
-
   const newTask={
-    employeeId: employeeSelect.value,
-    employeeName:employeeSelect.options[employeeSelect.selectedIndex].innerHTML,
-    projectId: currentProject.id,
+    employeeId: this.state.taskForm.employeeId.toString(),
+    employeeName:this.state.taskForm.employeeName,
+    projectId: currentProject.id.toString(),
     projectName: currentProject.name,
-    name:document.getElementById('task-name').value,
-    description:document.getElementById('task-description').value,
+    name:this.state.taskForm.taskName,
+    description:this.state.taskForm.taskDescription,
     statusId:0,
     statusName:'Todo'
   };
@@ -81,14 +146,53 @@ taskEditCloseAndSave = () => {
   modalForm('editTaskModal',false);
 }
 
+
+onCreationDateChange = creationDate => {
+	
+  this.setState( prevState => ({
+    projectForm: {
+      ...prevState.projectForm,
+      creationDate,
+    }
+  }));
+}
+
+
 componentWillReceiveProps(nextProps) {
+
+  if (!(Object.keys(nextProps.currentProject).length === 0 && nextProps.currentProject.constructor === Object)) {
+    this.setState( prevState => ({
+      projectForm: {
+        ...prevState.projectForm,
+        projectName: nextProps.currentProject.name,
+        description: nextProps.currentProject.description,
+        creationDate: new Date(nextProps.currentProject.creationDate) 
+      }
+    }));
+  }
   this.forceUpdateHandler();
 }
+
+
+handleChangeSelect = e => {
+  const { name, value } = e.target;
+  const selectedText=e.target.options[e.target.selectedIndex].innerHTML;
+  this.setState( prevState => ({
+    taskForm: {
+      ...prevState.taskForm,
+      [name+'Id']: value,
+      [name]: selectedText
+    }
+  }));
+
+};  
+
+
 
 modalBody() {
   const { employees } = this.props;
   return (	
-    <select id="employee-select" >
+    <select name="employeeName" value={this.state.taskForm.employeeId} onChange={this.handleChangeSelect} >
       {employees.map( (employee,index) => {
         return  <option key={index} value={employee.id} >{employee.name+' '+employee.surName}</option>
       }
@@ -96,6 +200,18 @@ modalBody() {
     </select>
   );			
 }
+
+
+onCreationDateChange = creationDate => {
+	
+  this.setState( prevState => ({
+    projectForm: {
+      ...prevState.projectForm,
+      creationDate,
+    }
+  }));
+}
+
 
 render() {
   const { currentProject, currentProjectTasks, dispatch, employees } = this.props;
@@ -111,15 +227,19 @@ render() {
     test=currentProjectTasks.filter( task => (task.statusId===2));
     done=currentProjectTasks.filter( task => (task.statusId===3));	 
   }
+  
+  const heightTarget=(currentProjectTasks.length>0) ? currentProjectTasks.length*100 : 350;
 
   const formattedCreationDate=formatDate(currentProject.creationDate);  
 
+  
   return (
 
     <div>
 
-      {modalEditProject(this.projectEditCloseAndSave)}
-      {modalEditTask(this.taskEditCloseAndSave,this.modalBody())}	
+	  {modalEditProject(this.projectEditCloseAndSave,this.onCreationDateChange,this.handleChangeProjectForm,this.state.projectForm)}
+	  
+      {modalEditTask(this.taskEditCloseAndSave,this.handleChangeTaskForm,this.modalBody(),this.state.taskForm)}	
 
       <div className="container">
 
@@ -147,49 +267,77 @@ render() {
 
         <br/>
 
+
+
         <div className="row">
 
-          <div className="task-column col-md-3">
+          <div className="col-md-3">
             <div className="task-column-title">
               Todo
             </div>			
+          </div>
+
+          <div className="col-md-3">
+            <div className="task-column-title">
+              In progress
+            </div>			
+          </div>
+
+          <div className="col-md-3">
+            <div className="task-column-title">
+              In test
+            </div>			
+          </div>
+
+          <div className="col-md-3">
+            <div className="task-column-title">
+              Done
+            </div>			
+          </div>
+
+        </div> 
+		
+        <br/>
+		
+        <div className="row todos-content" >
+
+          <div className="task-column col-md-3">
+		
             <TaskTarget
               typeTask={0}
               tasks={todos}
               onDrop={this.onDrop}
+			  heightTarget={heightTarget}
             />
           </div>
 
           <div className="task-column col-md-3">
-            <div className="task-column-title">
-              In progress
-            </div>			
+		
             <TaskTarget
               typeTask={1}
               tasks={progress}
               onDrop={this.onDrop}
+			  heightTarget={heightTarget}
             />
           </div>
 
           <div className="task-column col-md-3">
-            <div className="task-column-title">
-              In test
-            </div>			
+			
             <TaskTarget
               typeTask={2}
               tasks={test}
               onDrop={this.onDrop}
+			  heightTarget={heightTarget}
             />
           </div>
 
           <div className="task-column col-md-3">
-            <div className="task-column-title">
-              Done
-            </div>			
+		
             <TaskTarget
               typeTask={3}
               tasks={done}
               onDrop={this.onDrop}
+			  heightTarget={heightTarget}
             />
           </div>
 

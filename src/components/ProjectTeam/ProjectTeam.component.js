@@ -118,7 +118,7 @@ render() {
 
   const { currentProjectTeam } = this.props;
 
-  const listHeight = 495;
+  const listHeight = 350;
   const rowHeight = 33;
   const rowWidth = 1100;
 
@@ -176,7 +176,7 @@ render() {
 
             <List
               {...this.props}
-              width={rowWidth}
+			  width={currentProjectTeam.length >10 ? rowWidth+17 : rowWidth}
               height={listHeight}
               rowHeight={rowHeight}
               rowRenderer={this.renderRow}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './ProjectList.component.css';
 import ProjectListItem from '../ProjectListItem/ProjectListItem.component';
 import { connect } from 'react-redux';
-import { modalForm, sortGrid, sortImage, modalConfirm, modalEditProjectFull } from '../../utils';
+import { modalForm, sortGrid, sortImage, modalConfirm, modalEditProject } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
 import { saveProject, deleteProject, setProjects, addProject, deleteProjectStore, setCurrentProject, updateProjectStore } from '../../redux/actionsProjects';	
 import { List } from "react-virtualized";
@@ -14,12 +14,16 @@ class ProjectList extends Component {
     super(props);
 
     this.state = {
-      creationDate: ((this.props.currentProject)&&(this.props.currentProject.creationDate)) 
-        ? new Date(this.props.currentProject.creationDate) 
-        : new Date(),
 
       sortBy:'name',
-      sortDirection:0				
+      sortDirection:0,
+	  
+	  form: {
+	    projectName:'',
+        description:'',
+        creationDate:new Date()
+	  }
+	  
     }
 
     this.formState='';
@@ -38,13 +42,13 @@ forceUpdateHandler = () => {
 
 handleCloseAndSave = () => {
   const { dispatch,currentProject } = this.props;
-  const isoDate=new Date(this.state.creationDate).toISOString();
+  const isoDate=new Date(this.state.form.creationDate).toISOString();
 
   if (this.formState.includes('EDIT')) {
     const changedProject={
       ...currentProject,
-      name:document.getElementById('project-name').value,
-      description:document.getElementById('project-description').value,
+      name:this.state.form.projectName,
+      description:this.state.form.description,
       creationDate:isoDate
     };
 
@@ -53,26 +57,45 @@ handleCloseAndSave = () => {
 	
   } else {
     const newProject={
-      name:document.getElementById('project-name').value,
-      description:document.getElementById('project-description').value,
+      name:this.state.form.projectName,
+      description:this.state.form.description,
       creationDate:isoDate
     };
     dispatch(addProject(newProject));
     dispatch(setProjects());	
   }	
 
-  dispatch(setCurrentProject(currentProject));
+
   this.forceUpdateHandler();
   modalForm('editProjectModal',false);
 
 }
 
+handleChange = e => {
+  const { name, value } = e.target;
+	
+  this.setState( prevState => ({
+    form: {
+      ...prevState.form,
+      [name]: value,
+    }
+  }));
+
+};
+
 addProjectShow = () => {
   this.setFormState('ADD');
-  document.getElementById('project-name').value='';
-  document.getElementById('project-description').value='';
-  this.setState({ creationDate: new Date() });
-
+  
+  this.setState( prevState => ({
+    form: {
+      ...prevState.form,
+      projectName: '',
+      description: '',
+      creationDate: new Date()
+    }
+  }));
+  
+  this.forceUpdateHandler();
   modalForm('editProjectModal',true);
 }
 
@@ -105,20 +128,18 @@ componentDidMount() {
 
 
 componentWillReceiveProps(nextProps) {
-  document.getElementById('project-name').value=nextProps.currentProject.name;
-  document.getElementById('project-description').value=nextProps.currentProject.description;
 
-  this.setState({
-    creationDate: ((nextProps.currentProject)&&(nextProps.currentProject.creationDate)) 
-      ?  new Date(nextProps.currentProject.creationDate) 
-      : new Date()
-  });
+  if (!(Object.keys(nextProps.currentProject).length === 0 && nextProps.currentProject.constructor === Object)) {
+    this.setState( prevState => ({
+      form: {
+        ...prevState.form,
+        projectName: nextProps.currentProject.name,
+        description: nextProps.currentProject.description,
+        creationDate: new Date(nextProps.currentProject.creationDate) 
+      }
+    }));
+  }
   this.forceUpdateHandler();
-}
-
-
-onCreationDateChange = creationDate => {
-  this.setState({ creationDate });
 }
 
 
@@ -130,6 +151,16 @@ sortClick(columnName) {
   this.forceUpdateHandler();
 }
 
+
+  onCreationDateChange = creationDate => {
+	
+    this.setState( prevState => ({
+      form: {
+        ...prevState.form,
+        creationDate,
+      }
+    }));
+  }
 
 renderRow = ({ index, key, style }) => {
   const { projects } = this.props;	
@@ -153,14 +184,14 @@ render() {
 
   const { projects } = this.props;
 
-  const listHeight = 495;
+  const listHeight = 350;
   const rowHeight = 33;
   const rowWidth = 1100;
-
+  
   return (
     <div>
 
-      {modalEditProjectFull(this.handleCloseAndSave,this.onCreationDateChange,this.state.creationDate)}
+      {modalEditProject(this.handleCloseAndSave,this.onCreationDateChange,this.handleChange,this.state.form)}
       {modalConfirm(this.confirmCloseAndDelete)}
 
       {/*projects list*/}   
@@ -205,7 +236,7 @@ render() {
 
           <List
             {...this.props}
-            width={rowWidth}
+            width={projects.length >10 ? rowWidth+17 : rowWidth} 
             height={listHeight}
             rowHeight={rowHeight}
             rowRenderer={this.renderRow}

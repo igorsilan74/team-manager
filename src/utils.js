@@ -20,6 +20,7 @@ export const formatDate = (utcDate) => {
   return formattedDate;
 }
 
+
 export const sortGrid = (sortedData,sortBy,sortDirection) => {
   if (sortBy.includes('.')) {
     return sortComplicatedGrid(sortedData,
@@ -123,54 +124,7 @@ export const modalAddUserToProject = (addEmployeeCloseAndSave,body) => {
   );
 }
 
-export const modalEditProject = (projectEditCloseAndSave) => {
-  return (
-
-    <div className="modal fade" id="editProjectModal"  role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
-      <div className="modal-dialog" role="document">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title" id="editProjectModalLabel">Edit</h5>
-            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true" onClick={() => modalClose('editProjectModal')}>&times;</span>
-            </button>
-          </div>
-          <div className="modal-body">
-            <div id="projects-item" className="container">
-
-              <div className="row">
-                <div className="col-md-2">
-                  <label>Name:</label>
-                </div>
-                <div className="col-md-10">
-                  <input id="project-name" type="text" placeholder="Enter project name" size="50"></input><br/>
-                </div>
-              </div>  
-
-              <div className="row">
-                <div className="col-md-2">
-                  <label>Description:</label>
-                </div>
-                <div className="col-md-10">
-                  <input id="project-description" type="text" placeholder="Enter project description" size="50"></input><br/>
-                </div>
-              </div>  
-
-            </div> 
-          </div>
-          <div className="modal-footer">
-            <button id="project-modal-ok" type="button" className="btn btn-primary" onClick={projectEditCloseAndSave} >OK</button>
-            <button id="project-modal-close" type="button" className="btn btn-secondary" data-dismiss="modal" onClick={() => modalClose('editProjectModal')}>CANCEL</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  );
-} 
-
-
-export const modalEditTask = (taskEditCloseAndSave,body) => {
+export const modalEditTask = (taskEditCloseAndSave,handleChangeTaskForm,body,form) => {
   return (
 
     <div className="modal fade" id="editTaskModal"  role="dialog" aria-labelledby="editTaskModalLabel" aria-hidden="true">
@@ -199,7 +153,7 @@ export const modalEditTask = (taskEditCloseAndSave,body) => {
                   <label>Name:</label>
                 </div>
                 <div className="col-md-10">
-                  <input id="task-name" type="text" placeholder="Enter task name" size="50"></input><br/>
+                  <input name="taskName" type="text" placeholder="Enter task name" size="50"  value={form.taskName} onChange={handleChangeTaskForm}></input><br/>
                 </div>
               </div>  
 
@@ -208,7 +162,7 @@ export const modalEditTask = (taskEditCloseAndSave,body) => {
                   <label>Description:</label>
                 </div>
                 <div className="col-md-10">
-                  <input id="task-description" type="text" placeholder="Enter task description" size="50"></input><br/>
+                  <input name="taskDescription" type="text" placeholder="Enter task description" size="50" value={form.taskDescription} onChange={handleChangeTaskForm}></input><br/>
                 </div>
               </div>  
 
@@ -226,7 +180,7 @@ export const modalEditTask = (taskEditCloseAndSave,body) => {
 }
 
 
-export const modalEditProjectFull = (handleCloseAndSave,onCreationDateChange,creationDate) => {
+export const modalEditProject = (handleCloseAndSave,onCreationDateChange,handleChange,form) => {
   return (
 
     <div className="modal fade" id="editProjectModal"  role="dialog" aria-labelledby="editProjectModalLabel" aria-hidden="true">
@@ -247,7 +201,7 @@ export const modalEditProjectFull = (handleCloseAndSave,onCreationDateChange,cre
                 </div>
 
                 <div className="col-md-10">
-                  <input id="project-name" type="text" placeholder="Enter project name" size="50"></input><br/>
+                  <input name="projectName" type="text" placeholder="Enter project name" size="50" value={form.projectName} onChange={handleChange}></input><br/>
                 </div>
               </div>  
 
@@ -257,7 +211,7 @@ export const modalEditProjectFull = (handleCloseAndSave,onCreationDateChange,cre
                 </div>
 
                 <div className="col-md-10">
-                  <input id="project-description" type="text" placeholder="Enter project description" size="50"></input><br/>
+                  <input name="description" type="text" placeholder="Enter project description" size="50" value={form.description} onChange={handleChange}></input><br/>
                 </div>
               </div>  
 
@@ -270,7 +224,7 @@ export const modalEditProjectFull = (handleCloseAndSave,onCreationDateChange,cre
                   <DateTimePicker
                     id='dtpCreationDate'
                     onChange={onCreationDateChange}
-                    value={creationDate}
+                    value={form.creationDate}
                   />
                 </div>
               </div>

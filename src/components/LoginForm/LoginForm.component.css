@@ -13,9 +13,14 @@
 #login-container {
 	padding-top: 90px;
 	/*max-width: 720px;*/
+	max-width: 1100px;
 	width:60%;
 	padding-left:90px;
-	margin: 0 auto;
+	margin-top:0px;
+	margin-bottom:0px;
+	margin-left:360px;
+	margin-right:160px;
+	/*margin: 0 auto;*/
 	
 }
 
@@ -25,11 +30,21 @@
 }
 */
 
+.form-group {
+  padding-top:10px;
+}
+
 .panel-login {
 	border-color: #ccc;
 	-webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
 	-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
 	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+}
+
+.panel-heading {
+	border-top:1px solid #ccc !important;
+	border-bottom:1px dotted #ccc !important;
+	padding-top:10px;
 }
 
 #head-login,#login-submit {
@@ -42,7 +57,7 @@
 
 .panel-login>.panel-heading {
 	color: #00415d;
-	background-color: #fff;
+	/*background-color: #fff;*/
 	border-color: #fff;
 	text-align:center;
 }
