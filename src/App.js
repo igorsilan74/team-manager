@@ -298,7 +298,7 @@ renderLeftMenu = () => {
             to={"/employees/"}
             onClick={() => this.changeToLoggedUser()}
           >
-            <img alt="employee" src="/img/search.png"></img>
+            <img alt="employee" src="/img/search.png" title="employees"></img>
           </Link>
           
         </div>
@@ -311,7 +311,7 @@ renderLeftMenu = () => {
             to={"/projects/"}
             onClick={() => this.changeToLoggedUser()}
           >
-            <img alt="projects" src="/img/suitcase.png"></img>
+            <img alt="projects" src="/img/suitcase.png" title="projects"></img>
           </Link>		
 		
           
