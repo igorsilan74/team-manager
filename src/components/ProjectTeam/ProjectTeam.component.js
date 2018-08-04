@@ -78,6 +78,7 @@ renderRow = ({ index, key, style }) => {
         {...sortedTeam[index]}
         key={index}
         modalConfirmShow={this.modalConfirmShow}
+        even={index % 2}
       />
 
     </div>
@@ -118,7 +119,7 @@ render() {
 
   const { currentProjectTeam } = this.props;
 
-  const listHeight = 350;
+  const listHeight = 330;
   const rowHeight = 33;
   const rowWidth = 1100;
 
@@ -149,7 +150,7 @@ render() {
             <div>
               <li className="projects-list-item">
                 <div id="projects-item" className="container">
-                  <div className="row">
+                  <div className="row header-row">
                     <div className="col-md-3 grid" onClick={() => this.sortClick('name')}>
                       Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
                     </div>

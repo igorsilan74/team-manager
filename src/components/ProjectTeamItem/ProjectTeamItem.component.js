@@ -18,22 +18,26 @@ deleteProject = (id) => {
 
 render() {
 
-  const { id, name, position ,location , birthday } = this.props;
+  const { id, name, surName, position ,location , birthday, even } = this.props;
   const formattedBirthday=formatDate(birthday);
 
+  const style = {
+	  backgroundColor: even ? '#eaeae1' : 'none'
+  }  
+  
   return (
     <div>
       <li className="project-team-items">
 
         <div id="team-item" className="container">
-          <div className="row">
+          <div className="row" style={style}>
             <div id="project-link" className="col-md-3 grid">
               <Link
                 className="link--employee"
                 to={'/employee/'+id}
                 onClick={() => this.changeCurrentUser(id)}
               >
-                {name}
+                {name+' '+surName}
               </Link>
             </div>
             <div className="col-md-3 grid"> 

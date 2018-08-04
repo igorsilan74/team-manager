@@ -28,8 +28,12 @@ editShow = (id) => {
 
 render() {
 
-  const { id, name, position, location, birthday } = this.props;
+  const { id, name, surName, position, location, birthday, even } = this.props;
 
+  const style = {
+	  backgroundColor: even ? '#eaeae1' : 'none'
+  }
+  
   const formattedBirthday=formatDate(birthday);
 
   return (
@@ -37,14 +41,14 @@ render() {
     <li className="employees-list-item">
 
       <div id="employees-item" className="container">
-        <div className="row">
+        <div className="row" style={style}>
           <div id="employee-link" className="col-md-4 grid">
             <Link
               className="link--employee"
               to={'/employee/'+id}
               onClick={() => this.changeCurrentUser(id)}
             >
-              {name}
+              {name+' '+surName}
             </Link>
           </div>
           <div className="col-md-2 grid"> 

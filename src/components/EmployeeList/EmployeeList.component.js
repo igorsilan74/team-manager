@@ -274,6 +274,7 @@ renderRow = ( propsRender ) => {
         {...sortedEmployees[index]}
         onEditShow={this.handleShow}
         modalConfirmShow={this.modalConfirmShow}
+        even={index % 2}
       />
     </div>
   );
@@ -380,7 +381,7 @@ render() {
           <div className="table-header">
             <li className="employees-list-item">
               <div id="employees-item" className="container">
-                <div className="row">
+                <div className="row header-row">
                   <div className="col-md-4 grid" onClick={() => this.sortClick('name')} >
                     Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
                   </div>

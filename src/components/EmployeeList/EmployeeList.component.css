@@ -4,6 +4,9 @@
 	padding-top:5px;
 }
 
+.header-row {
+	background-color:#e6f2ff;
+}
 
 .employee-list {
 	list-style-type: none; 

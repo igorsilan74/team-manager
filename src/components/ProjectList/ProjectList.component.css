@@ -29,3 +29,7 @@
     border: 1px solid gray;
 	box-sizing: border-box;
 }
+
+.header-row {
+	background-color:#e6f2ff;
+}
