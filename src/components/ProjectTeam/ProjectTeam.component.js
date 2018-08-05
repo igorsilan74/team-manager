@@ -137,53 +137,57 @@ render() {
               Team
             </div>
             <div className="col-md-3">
-              <button className="btn btn-primary btn-sm" onClick={this.addEmployeeShow}>Add user to project</button>
+              <button className="btn btn-primary btn-sm add-user-project" onClick={this.addEmployeeShow}>Add user to project</button>
             </div>
           </div>
         </div>
         <br/>
 
         <ul className="project-team">
+          {
+		    (currentProjectTeam.length>0) ?         
+              <div className="list">
 
-          <div className="list">
+                <div>
+                  <li className="projects-list-item">
+                    <div id="projects-item" className="container">
+                      <div className="row header-row">
+                        <div className="col-md-3 grid" onClick={() => this.sortClick('name')}>
+                          Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
+                        </div>
+                        <div className="col-md-3 grid" onClick={() => this.sortClick('position.name')}> 
+                          Position{sortImage(this.state.sortDirection,this.state.sortBy,'position.name')}
+                        </div>
+                        <div className="col-md-2 grid" onClick={() => this.sortClick('location.name')}> 
+                          Location{sortImage(this.state.sortDirection,this.state.sortBy,'location.name')}
+                        </div>
+                        <div className="col-md-2 grid"> 
+                          Birthday
+                        </div>
 
-            <div>
-              <li className="projects-list-item">
-                <div id="projects-item" className="container">
-                  <div className="row header-row">
-                    <div className="col-md-3 grid" onClick={() => this.sortClick('name')}>
-                      Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
-                    </div>
-                    <div className="col-md-3 grid" onClick={() => this.sortClick('position.name')}> 
-                      Position{sortImage(this.state.sortDirection,this.state.sortBy,'position.name')}
-                    </div>
-                    <div className="col-md-2 grid" onClick={() => this.sortClick('location.name')}> 
-                      Location{sortImage(this.state.sortDirection,this.state.sortBy,'location.name')}
-                    </div>
-                    <div className="col-md-2 grid"> 
-                      Birthday
-                    </div>
+                        <div className="col-md-1 grid"> 
+                        </div>
 
-                    <div className="col-md-1 grid"> 
-                    </div>
+                        <div className="col-md-1 grid"> 
+                        </div>
 
-                    <div className="col-md-1 grid"> 
-                    </div>
-
-                  </div> 
+                      </div> 
+                    </div>	 
+                  </li>
                 </div>	 
-              </li>
-            </div>	 
 
-            <List
-              {...this.props}
-			  width={currentProjectTeam.length >10 ? rowWidth+17 : rowWidth}
-              height={listHeight}
-              rowHeight={rowHeight}
-              rowRenderer={this.renderRow}
-              rowCount={currentProjectTeam.length} />
-          </div>
+                <List
+                  {...this.props}
+			      width={currentProjectTeam.length >10 ? rowWidth+17 : rowWidth}
+                  height={listHeight}
+                  rowHeight={rowHeight}
+                  rowRenderer={this.renderRow}
+                  rowCount={currentProjectTeam.length} 
+                />
 
+		      </div>
+              :null
+          }
         </ul>
 
 

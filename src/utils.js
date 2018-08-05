@@ -159,7 +159,7 @@ export const modalEditTask = (taskEditCloseAndSave,handleChangeTaskForm,body,for
 
               <div className="row">
                 <div className="col-md-2">
-                  <label>Description:</label>
+                  <label style={{fontSize:'0.9em'}}>Description:</label>
                 </div>
                 <div className="col-md-10">
                   <input name="taskDescription" type="text" placeholder="Enter task description" size="50" value={form.taskDescription} onChange={handleChangeTaskForm}></input><br/>
@@ -207,7 +207,7 @@ export const modalEditProject = (handleCloseAndSave,onCreationDateChange,handleC
 
               <div className="row">
                 <div className="col-md-2">
-                  <label>Description:</label>
+                  <label style={{fontSize:'0.9em'}}>Description:</label>
                 </div>
 
                 <div className="col-md-10">

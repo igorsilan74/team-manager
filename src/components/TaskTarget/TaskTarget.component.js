@@ -45,7 +45,7 @@ class TaskTarget extends Component {
     const borderWidth = (typeTask===0) ? 0 : 1;
     const style = {
       height: heightTarget+'px',
-	  borderLeft: borderWidth+'px solid black'
+	  borderLeft: borderWidth+'px solid gray'
     };
 
     return connectDropTarget(

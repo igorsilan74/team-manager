@@ -202,7 +202,7 @@ render() {
             Projects
           </div>
           <div className="col-md-3">
-            <button className="btn btn-primary btn-sm" onClick={this.addProjectShow}>Add new project</button>
+            <button className="btn btn-primary btn-sm add-project" onClick={this.addProjectShow}>Add new project</button>
           </div>
         </div>
       </div>
