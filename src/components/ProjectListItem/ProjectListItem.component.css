@@ -3,3 +3,6 @@
 	padding-left:0px;
 }
 
+div.projects-list-item:nth-child(even) li .grid {
+	background: #eaeae1;
+}

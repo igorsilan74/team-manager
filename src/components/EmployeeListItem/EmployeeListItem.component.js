@@ -28,12 +28,8 @@ editShow = (id) => {
 
 render() {
 
-  const { id, name, surName, position, location, birthday, even } = this.props;
+  const { id, name, surName, position, location, birthday } = this.props;
 
-  const style = {
-	  backgroundColor: even ? '#eaeae1' : 'none'
-  }
-  
   const formattedBirthday=formatDate(birthday);
 
   return (
@@ -41,7 +37,7 @@ render() {
     <li className="employees-list-item">
 
       <div id="employees-item" className="container">
-        <div className="row" style={style}>
+        <div className="row" >
           <div id="employee-link" className="col-md-4 grid">
             <Link
               className="link--employee"

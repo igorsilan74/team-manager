@@ -3,3 +3,7 @@
 	padding-left:0px;
 }
 
+div.employees-list-item:nth-child(even) li .grid {
+	background: #eaeae1;
+}
+

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './ProjectTeam.component.css';
 import ProjectTeamItem from '../ProjectTeamItem/ProjectTeamItem.component';
-import { modalConfirm, modalForm, setCurrentId, currentId, sortGrid, sortImage, modalAddUserToProject } from '../../utils';
+import { modalConfirm, modalForm, setCurrentId, currentId, sortGrid, sortImage, modalAddUserToProject, scrollBarWidth } from '../../utils';
 import { setEmployees } from '../../redux/actionsEmployee';
 import { deleteProjectEmployee, addProjectEmployee } from '../../redux/actionsProjects';
 import { connect } from 'react-redux';
@@ -72,13 +72,12 @@ renderRow = ({ index, key, style }) => {
   const sortedTeam = sortGrid([...currentProjectTeam],sortBy,sortDirection);
 
   return (
-    <div key={key} style={style}>	
+    <div className="project-team-items" key={key} style={style}>	
 
       <ProjectTeamItem
         {...sortedTeam[index]}
         key={index}
         modalConfirmShow={this.modalConfirmShow}
-        even={index % 2}
       />
 
     </div>
@@ -178,7 +177,7 @@ render() {
 
                 <List
                   {...this.props}
-			      width={currentProjectTeam.length >10 ? rowWidth+17 : rowWidth}
+			      width={currentProjectTeam.length >10 ? rowWidth+scrollBarWidth : rowWidth}
                   height={listHeight}
                   rowHeight={rowHeight}
                   rowRenderer={this.renderRow}

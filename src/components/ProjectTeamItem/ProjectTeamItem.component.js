@@ -21,16 +21,12 @@ render() {
   const { id, name, surName, position ,location , birthday, even } = this.props;
   const formattedBirthday=formatDate(birthday);
 
-  const style = {
-	  backgroundColor: even ? '#eaeae1' : 'none'
-  }  
-  
   return (
     <div>
       <li className="project-team-items">
 
         <div id="team-item" className="container">
-          <div className="row" style={style}>
+          <div className="row" >
             <div id="project-link" className="col-md-3 grid">
               <Link
                 className="link--employee"

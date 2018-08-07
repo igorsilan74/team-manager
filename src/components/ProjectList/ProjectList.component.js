@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './ProjectList.component.css';
 import ProjectListItem from '../ProjectListItem/ProjectListItem.component';
 import { connect } from 'react-redux';
-import { modalForm, sortGrid, sortImage, modalConfirm, modalEditProject } from '../../utils';
+import { modalForm, sortGrid, sortImage, modalConfirm, modalEditProject, scrollBarWidth } from '../../utils';
 import DateTimePicker from 'react-datetime-picker';
 import { saveProject, deleteProject, setProjects, addProject, deleteProjectStore, setCurrentProject, updateProjectStore } from '../../redux/actionsProjects';	
 import { List } from "react-virtualized";
@@ -43,25 +43,23 @@ forceUpdateHandler = () => {
 handleCloseAndSave = () => {
   const { dispatch,currentProject } = this.props;
   const isoDate=new Date(this.state.form.creationDate).toISOString();
-
+  let project={
+    name:this.state.form.projectName,
+    description:this.state.form.description,
+    creationDate:isoDate
+  };
+  
   if (this.formState.includes('EDIT')) {
-    const changedProject={
+    project={
       ...currentProject,
-      name:this.state.form.projectName,
-      description:this.state.form.description,
-      creationDate:isoDate
+      ...project
     };
 
-    dispatch(updateProjectStore(changedProject));	
-    dispatch(saveProject(changedProject));
+    dispatch(updateProjectStore(project));	
+    dispatch(saveProject(project));
 	
   } else {
-    const newProject={
-      name:this.state.form.projectName,
-      description:this.state.form.description,
-      creationDate:isoDate
-    };
-    dispatch(addProject(newProject));
+    dispatch(addProject(project));
     dispatch(setProjects());	
   }	
 
@@ -168,12 +166,11 @@ renderRow = ({ index, key, style }) => {
   const sortedProjects = sortGrid([...projects],sortBy,sortDirection);
   return (
 
-    <div key={key} style={style}>	
+    <div className="projects-list-item" key={key} style={style}>	
       <ProjectListItem
         {...sortedProjects[index]}
         onEditShow={this.handleShow}
         modalConfirmShow={this.modalConfirmShow}
-        even={index % 2}
       />
     </div>
   );
@@ -237,7 +234,7 @@ render() {
 
           <List
             {...this.props}
-            width={projects.length >10 ? rowWidth+17 : rowWidth} 
+            width={projects.length >10 ? rowWidth+scrollBarWidth : rowWidth} 
             height={listHeight}
             rowHeight={rowHeight}
             rowRenderer={this.renderRow}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './EmployeeList.component.css';
 import EmployeeListItem from '../EmployeeListItem/EmployeeListItem.component';
 import { connect } from 'react-redux';
-import { modalForm, sortGrid, sortImage, modalEditEmployee, modalConfirm } from '../../utils';
+import { modalForm, sortGrid, sortImage, modalEditEmployee, modalConfirm, scrollBarWidth } from '../../utils';
 import { 
   saveEmployee,
   deleteEmployee,
@@ -17,30 +17,44 @@ import { List, ScrollSync } from "react-virtualized";
 
 class EmployeeList extends Component {
 
+  static defaultProps = {
+    form: {
+      name: "",
+      positionId:"0",
+      position:{
+	    id:"0",
+        name:""		  
+      },
+      locationId:"0",
+      location:{
+	    id:"0",
+        name:""		  
+      },
+      skillLevelId:"0",
+      skillLevel:{
+        id:"0",
+        name:""		  
+      },
+      skillId:"0",
+      skill:{
+        id:"0",
+        name:""		  
+      },
+      email:"",
+	  avatar: "",
+      password:"",
+      surName:"",
+      birthday: new Date()
+    }
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      
       sortBy:'name',
       sortDirection:0,
-	  
-	  form: {
-        employeeName: "",
-        positionId:-1,
-        position:"",
-        locationId:-1,
-        location:"",
-        skillLevelId:-1,
-        skillLevel:"",
-        skillId:-1,
-        skill:"",
-        email:"",
-        password:"",
-        surName:"",
-        birthday: new Date()
-      }
-	
+	  form: {...props.form}
     }
 
     this.formState='';
@@ -61,69 +75,23 @@ class EmployeeList extends Component {
   handleCloseAndSave = () => {
     const { dispatch,currentUser } = this.props;
 
-    const isoBirthday=new Date(this.state.form.birthday).toISOString();
-
+ 	let employee={
+      ...this.state.form,
+      birthday:new Date(this.state.form.birthday).toISOString()
+    };
+	
     if (this.formState.includes('EDIT')) {
-      const changedEmployee={
-        ...currentUser,
-        name:this.state.form.employeeName,
-        birthday:isoBirthday,
-        positionId:this.state.form.positionId.toString(),
-        position:{
-          id:this.state.form.positionId.toString(),
-          name:this.state.form.position
-        },
-        locationId:this.state.form.locationId.toString(),
-        location:{
-          id:this.state.form.locationId.toString(),
-          name:this.state.form.location
-        },
-
-        email: this.state.form.email,
-        password: this.state.form.password,
-        surName: this.state.form.surName,
-
-        skillLevelId:this.state.form.skillLevelId.toString(),
-        skillLevel:{
-          id:this.state.form.skillLevelId.toString(),
-          name:this.state.form.skillLevel
-        },
-
-        skillId:this.state.form.skillId.toString(),
-        skill:{
-          id:this.state.form.skillId.toString(),
-          name:this.state.form.skill
-        }
-
+      employee={
+        ...employee, 
+        id:currentUser.id
       };
 
-	  dispatch(updateEmployeeStore(changedEmployee));	  
-      dispatch(saveEmployee(changedEmployee));
+	  dispatch(updateEmployeeStore(employee));	  
+      dispatch(saveEmployee(employee));
 
     } else {
-      const newEmployee={
-        name:this.state.form.employeeName,
-        avatar: '',
-        email: this.state.form.email,
-        birthday:isoBirthday,
-        password: this.state.form.password,
-        surName: this.state.form.surName,
-        positionId:this.state.form.positionId.toString(),
-        position:{
-          id:this.state.form.positionId.toString(),
-          name:this.state.form.position
-        },
-        locationId:this.state.form.locationId.toString(),
-        location:{
-          id:this.state.form.locationId.toString(),
-          name:this.state.form.location
-        },
-        skillLevelId:this.state.form.skillLevelId.toString(),
-        skillId:this.state.form.skillId.toString(),
-      };
-
-      dispatch(addEmployee(newEmployee));
-	  dispatch(setEmployees(newEmployee));	  
+      dispatch(addEmployee(employee));
+	  dispatch(setEmployees(employee));	  
     }
 
     this.forceUpdateHandler();
@@ -155,34 +123,22 @@ class EmployeeList extends Component {
     this.setState( prevState => ({
       form: {
         ...prevState.form,
-        [name+'Id']: value,
-        [name]: selectedText
+        [name+'Id']: value.toString(),
+        [name]:{
+		  id:value.toString(),
+		  name:selectedText
+        }
       }
     }));
 
   };  
 
   addEmployeeShow = () => {
-    const { dispatch } = this.props;
+    const { dispatch, form } = this.props;
     this.setFormState('ADD');
 
     this.setState( prevState => ({
-      form: {
-        ...prevState.form,
-        employeeName: '',
-        positionId: 0,
-        position: '',
-        locationId: 0,
-        location: '',
-        email: '',
-        password: '',
-        surName: '',
-        skillLevelId: 0,
-        skillLevel: '',
-        skillId: 0,
-        skill: '',
-        birthday: new Date()
-      }
+      form: { ...form }
     }));
 	
     this.forceUpdateHandler();
@@ -223,31 +179,21 @@ class EmployeeList extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!(Object.keys(nextProps.currentUser).length === 0 && nextProps.currentUser.constructor === Object)) {
-      console.log(nextProps.currentUser);
+      const { birthday, ...userData } = nextProps.currentUser;
+	  
 	  this.setState( prevState => ({
         form: {
           ...prevState.form,
-          employeeName: nextProps.currentUser.name,
-          positionId: nextProps.currentUser.positionId,
-          position: nextProps.currentUser.position.name,
-          locationId: nextProps.currentUser.locationId,
-          location: nextProps.currentUser.location.name,
-          email: nextProps.currentUser.email,
-          password: nextProps.currentUser.password,
-          surName: nextProps.currentUser.surName,
-          skillLevelId: nextProps.currentUser.skillLevelId,
-          skillLevel: nextProps.currentUser.skillLevel.name,
-          skillId: nextProps.currentUser.skillId,
-          skill: nextProps.currentUser.skill.name,
-          birthday: new Date(nextProps.currentUser.birthday)
+          ...userData,
+          birthday: new Date(birthday)
         }
       }));
+	  
     }
     this.forceUpdateHandler();
 
   }
   
-
   onBirthdayChange = birthday => {
 	
     this.setState( prevState => ({
@@ -269,12 +215,11 @@ renderRow = ( propsRender ) => {
   const sortedEmployees = sortGrid([...employees],sortBy,sortDirection);
 
   return (
-    <div key={key} style={style}>	
+    <div className="employees-list-item" key={key} style={style}>	
       <EmployeeListItem
         {...sortedEmployees[index]}
         onEditShow={this.handleShow}
         modalConfirmShow={this.modalConfirmShow}
-        even={index % 2}
       />
     </div>
   );
@@ -408,7 +353,7 @@ render() {
           
           <List
             {...this.props}
-            width={employees.length >10 ? rowWidth+17 : rowWidth} 
+            width={employees.length >10 ? rowWidth+scrollBarWidth : rowWidth} 
             height={listHeight}
             rowHeight={rowHeight}
             rowRenderer={this.renderRow}

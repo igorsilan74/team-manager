@@ -3,12 +3,35 @@ import './LoginForm.component.css';
 
 class LoginForm extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      form: {	  
+        email:'',
+        password:''
+	  }
+    }
+
+  }	
+
 onSignin = event => {
   event.preventDefault();
-  const email = event.target.querySelector('[name=email]').value;
-  const password = event.target.querySelector('[name=password]').value;
+  const { email, password } = this.state.form;
   this.props.onSignin(email, password);
 }
+
+handleChange = e => {
+  const { name, value } = e.target;
+	
+  this.setState( prevState => ({
+    form: {
+      ...prevState.form,
+      [name]: value,
+    }
+  }));
+
+};
 
 render() {
 
@@ -33,10 +56,10 @@ render() {
                     <form id="login-form" onSubmit={this.onSignin} >
 
                       <div className="form-group">
-                        <input type="text" name="email" id="email"  className="form-control" placeholder="Email"  />
+                        <input type="text" name="email" id="email"  className="form-control" placeholder="Email" value={this.state.form.email} onChange={this.handleChange}  />
                       </div>
                       <div className="form-group">
-                        <input type="password" name="password" id="password"  className="form-control" placeholder="Password" />
+                        <input type="password" name="password" id="password"  className="form-control" placeholder="Password" value={this.state.form.password} onChange={this.handleChange} />
                       </div>
 
                       <div className="form-group">

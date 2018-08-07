@@ -2,6 +2,7 @@
 import DateTimePicker from 'react-datetime-picker';
 
 export let currentId;
+export const scrollBarWidth = 17;
 
 export function setCurrentId(id) {
   currentId = id;
@@ -263,7 +264,7 @@ export const modalEditEmployee = (handleCloseAndSave,onBirthdayChange,handleChan
                 </div>
 
                 <div className="col-md-10">
-                  <input name="employeeName" type="text" placeholder="Enter you name" size="50" value={form.employeeName} onChange={handleChange}></input><br/>
+                  <input name="name" type="text" placeholder="Enter you name" size="50" value={form.name} onChange={handleChange}></input><br/>
                 </div>
               </div>  
 

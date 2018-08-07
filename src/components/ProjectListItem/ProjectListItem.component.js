@@ -32,20 +32,17 @@ editShow = (id) => {
 
 render() {
 
-  const { id, name, description, creationDate, even } = this.props;
+  const { id, name, description, creationDate } = this.props;
 
   const formattedCreationDate=formatDate(creationDate);
 
-  const style = {
-	  backgroundColor: even ? '#eaeae1' : 'none'
-  }
 
   return (
 
     <li className="projects-list-item">
 
       <div id="projects-item" className="container">
-        <div className="row" style={style}>
+        <div className="row" >
           <div id="project-link" className="col-md-4 grid">
             <Link
               className="link--project"
