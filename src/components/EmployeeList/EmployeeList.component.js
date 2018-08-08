@@ -82,8 +82,8 @@ class EmployeeList extends Component {
 	
     if (this.formState.includes('EDIT')) {
       employee={
-        ...employee, 
-        id:currentUser.id
+        ...currentUser,
+        ...employee
       };
 
 	  dispatch(updateEmployeeStore(employee));	  
