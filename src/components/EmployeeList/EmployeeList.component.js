@@ -54,6 +54,8 @@ class EmployeeList extends Component {
     this.state = {
       sortBy:'name',
       sortDirection:0,
+	  searchValue:'',
+	  filteredEmployees:[],
 	  form: {...props.form}
     }
 
@@ -116,6 +118,38 @@ class EmployeeList extends Component {
     }));
 
   };
+
+  handleChangeSearch = e => {
+    const { name, value } = e.target;
+	
+    this.setState( prevState => ({
+      searchValue: value
+    }));
+
+  };
+  
+
+  handleKeyPress = e => {
+    if (e.key === 'Enter') {
+	  this.filterEmployee();
+    }
+  }
+
+  filterEmployee = () => {
+    const { searchValue } = this.state;
+    const { employees, dispatch } = this.props;
+    const filteredEmployees = employees.filter(({ name, surName }) => {
+      return (name+surName).toLowerCase().includes(searchValue.toLowerCase())
+    }
+    );
+    this.setState( prevState => ({
+      filteredEmployees,
+	  searchValue:''
+    }));
+
+    dispatch(setEmployees());
+    this.forceUpdateHandler();
+  }  
   
   handleChangeSelect = e => {
     const { name, value } = e.target;
@@ -180,13 +214,15 @@ class EmployeeList extends Component {
   componentWillReceiveProps(nextProps) {
     if (!(Object.keys(nextProps.currentUser).length === 0 && nextProps.currentUser.constructor === Object)) {
       const { birthday, ...userData } = nextProps.currentUser;
-	  
+	  const { employees } = this.props;
+
 	  this.setState( prevState => ({
         form: {
           ...prevState.form,
           ...userData,
           birthday: new Date(birthday)
-        }
+        },
+        filteredEmployees: ((employees.length===0)&&(nextProps.employees.length>0)) ?  [...nextProps.employees] : prevState.filteredEmployees
       }));
 	  
     }
@@ -206,21 +242,26 @@ class EmployeeList extends Component {
 
 
 renderRow = ( propsRender ) => {
-  
+ 
   const { index, key, style } = propsRender;
    
-  const { employees } = this.props;	
-  const { sortBy, sortDirection } = this.state;	
+  const { employees } = this.props;
   
-  const sortedEmployees = sortGrid([...employees],sortBy,sortDirection);
+  const { sortBy, sortDirection, filteredEmployees, searchValue } = this.state;	
+
+  const sortedEmployees =  sortGrid([...filteredEmployees],sortBy,sortDirection) ;
 
   return (
     <div className="employees-list-item" key={key} style={style}>	
-      <EmployeeListItem
-        {...sortedEmployees[index]}
-        onEditShow={this.handleShow}
-        modalConfirmShow={this.modalConfirmShow}
-      />
+      {
+	    sortedEmployees.length>0 ?	
+          <EmployeeListItem
+            {...sortedEmployees[index]}
+            onEditShow={this.handleShow}
+            modalConfirmShow={this.modalConfirmShow}
+          />
+	    : null
+      }	  
     </div>
   );
 }
@@ -282,10 +323,13 @@ modalLocations() {
 render() {
 
   const { employees } = this.props;
-
+  const { searchValue, filteredEmployees } = this.state;
+  
   const listHeight = 350;
   const rowHeight = 33;
   const rowWidth = 1100;
+
+  const rowCount = filteredEmployees.length;
 
   return (
     <div>
@@ -314,50 +358,66 @@ render() {
           <div id="btnAddEmployee" className="col-md-3">
             <button className="btn btn-primary btn-sm" onClick={this.addEmployeeShow}>Add new employee</button>
           </div>
+          <div className="col-md-3"></div>
+		  <div className="col-md-3">
+            <input id="enployeeNameSearch" type="text" placeholder="Enter employee's name" size="35" value={this.state.searchValue}
+			  onChange={this.handleChangeSearch}
+			  onKeyPress={this.handleKeyPress}
+            >
+            </input><br/>
+          </div>
+          <div id="btnFilterEmployee" className="col-md-1">
+            <button className="btn btn-primary btn-sm" onClick={this.filterEmployee}>Filter</button>
+          </div>		  
+          <div className="col-md-1"></div>
         </div>
       </div>
       <br/>
 
 
       <ul className="employee-list">
-
+	  
         <div className="list">
+          {
+	  	    rowCount ?
+              <div className="table-header">
+                <li className="employees-list-item">
+                  <div id="employees-item" className="container">
+                    <div className="row header-row">
+                      <div className="col-md-4 grid" onClick={() => this.sortClick('name')} >
+                        Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
+                      </div>
+                      <div className="col-md-2 grid" onClick={() => this.sortClick('position.name')}> 
+                        Position{sortImage(this.state.sortDirection,this.state.sortBy,'position.name')}
+                      </div>
+                      <div className="col-md-2 grid" onClick={() => this.sortClick('location.name')}> 
+                        Location{sortImage(this.state.sortDirection,this.state.sortBy,'location.name')}
+                      </div>
+                      <div className="col-md-2 grid"> 
+                        Birthday
+                      </div>
 
-          <div className="table-header">
-            <li className="employees-list-item">
-              <div id="employees-item" className="container">
-                <div className="row header-row">
-                  <div className="col-md-4 grid" onClick={() => this.sortClick('name')} >
-                    Name{sortImage(this.state.sortDirection,this.state.sortBy,'name')}
-                  </div>
-                  <div className="col-md-2 grid" onClick={() => this.sortClick('position.name')}> 
-                    Position{sortImage(this.state.sortDirection,this.state.sortBy,'position.name')}
-                  </div>
-                  <div className="col-md-2 grid" onClick={() => this.sortClick('location.name')}> 
-                    Location{sortImage(this.state.sortDirection,this.state.sortBy,'location.name')}
-                  </div>
-                  <div className="col-md-2 grid"> 
-                    Birthday
-                  </div>
+                      <div className="col-md-1 grid"> 
+                      </div>
 
-                  <div className="col-md-1 grid"> 
-                  </div>
+                      <div className="col-md-1 grid"> 
+                      </div>
 
-                  <div className="col-md-1 grid"> 
-                  </div>
-
-                </div> 
+                    </div> 
+                  </div>	 
+                </li>
               </div>	 
-            </li>
-          </div>	 
-          
+              : <div>
+			  No data was found
+			  </div>
+          } 
           <List
             {...this.props}
-            width={employees.length >10 ? rowWidth+scrollBarWidth : rowWidth} 
+            width={rowCount >10 ? rowWidth+scrollBarWidth : rowWidth} 
             height={listHeight}
             rowHeight={rowHeight}
             rowRenderer={this.renderRow}
-            rowCount={employees.length} 
+            rowCount={rowCount} 
 		  />
 	 </div>
           
