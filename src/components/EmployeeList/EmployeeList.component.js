@@ -130,14 +130,22 @@ class EmployeeList extends Component {
   
 
   handleKeyPress = e => {
+    const { dispatch } = this.props;  
     if (e.key === 'Enter') {
-	  this.filterEmployee();
+	  dispatch(setEmployees());
+      this.forceUpdateHandler();
     }
   }
+  
+  filterPress = e => {
+    const { dispatch } = this.props;
+    dispatch(setEmployees());
+    this.forceUpdateHandler();
+  }
+  
 
-  filterEmployee = () => {
+  filterEmployees = (employees) => {
     const { searchValue } = this.state;
-    const { employees, dispatch } = this.props;
     const filteredEmployees = employees.filter(({ name, surName }) => {
       return (name+surName).toLowerCase().includes(searchValue.toLowerCase())
     }
@@ -146,10 +154,7 @@ class EmployeeList extends Component {
       filteredEmployees,
 	  searchValue:''
     }));
-
-    dispatch(setEmployees());
-    this.forceUpdateHandler();
-  }  
+  } 
   
   handleChangeSelect = e => {
     const { name, value } = e.target;
@@ -197,7 +202,11 @@ class EmployeeList extends Component {
 
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, employees } = this.props;
+    this.setState( prevState => ({
+      filteredEmployees:employees
+    }));
+
     dispatch(setEmployees());
   }  
 
@@ -212,22 +221,19 @@ class EmployeeList extends Component {
 
 
   componentWillReceiveProps(nextProps) {
+
     if (!(Object.keys(nextProps.currentUser).length === 0 && nextProps.currentUser.constructor === Object)) {
       const { birthday, ...userData } = nextProps.currentUser;
-	  const { employees } = this.props;
-
 	  this.setState( prevState => ({
         form: {
           ...prevState.form,
           ...userData,
           birthday: new Date(birthday)
-        },
-        filteredEmployees: ((employees.length===0)&&(nextProps.employees.length>0)) ?  [...nextProps.employees] : prevState.filteredEmployees
+        }
       }));
-	  
     }
+    this.filterEmployees(nextProps.employees);
     this.forceUpdateHandler();
-
   }
   
   onBirthdayChange = birthday => {
@@ -367,7 +373,7 @@ render() {
             </input><br/>
           </div>
           <div id="btnFilterEmployee" className="col-md-1">
-            <button className="btn btn-primary btn-sm" onClick={this.filterEmployee}>Filter</button>
+            <button className="btn btn-primary btn-sm" onClick={this.filterPress}>Filter</button>
           </div>		  
           <div className="col-md-1"></div>
         </div>

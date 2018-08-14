@@ -222,8 +222,10 @@ renderTaskForm = () => {
 
 
 renderHeader = () => {
-
-
+  const { surName, name } = this.props.loggedUser;
+  
+  const loggedAbbr=Object.keys(this.props.loggedUser).length ? name.substring(0, 1)+'.'+surName: '';
+  
   return (
     <div>
       <header className="App-header">
@@ -232,14 +234,14 @@ renderHeader = () => {
             <div className="logo-block col-md-1">
               <img id="logo-app" alt="logo" src="/img/jira.png"></img>
             </div>
-            <div className="col-md-9"></div>
-            <div className="col-md-1">
+            <div className="col-md-8"></div>
+            <div className="col-md-2">
               <Link
                 className="link--header"
                 to={"/employee/"+this.props.loggedUser.id}
                 onClick={() => this.changeToLoggedUser()}
               >
-                {this.props.loggedUser.name}
+                {loggedAbbr}
               </Link>
             </div>
             <div className="col-md-1">

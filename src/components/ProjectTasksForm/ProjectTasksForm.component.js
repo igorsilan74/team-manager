@@ -27,7 +27,7 @@ class ProjectTasksForm extends Component {
 	    taskName:'',
         taskDescription:'',
         employeeId:-1,
-        employeeName:''
+        employee:''
 	  }
 	  
     }
@@ -111,14 +111,22 @@ handleChangeTaskForm = e => {
 
 
 taskEditShow = () => {
+
+  const { currentProjectTeam, employees } = this.props;
+
+  const currentProjectEmployeeIds=currentProjectTeam.map((employee) => {
+    return employee.id;
+  });
+
+  const projectEmployees = employees.filter( employee => (currentProjectEmployeeIds.includes(employee.id)) );
   
   this.setState( prevState => ({
     taskForm: {
       ...prevState.taskForm,
       taskName: '',
       taskDescription: '',
-      employeeId: -1,
-      employeeName: ''
+      employeeId: projectEmployees[0].id || "0",
+      employee: (projectEmployees[0].name+' '+projectEmployees[0].surName) || ""
     }
   }));
   
@@ -132,7 +140,7 @@ taskEditCloseAndSave = () => {
 
   const newTask={
     employeeId: this.state.taskForm.employeeId.toString(),
-    employeeName:this.state.taskForm.employeeName,
+    employeeName:this.state.taskForm.employee,
     projectId: currentProject.id.toString(),
     projectName: currentProject.name,
     name:this.state.taskForm.taskName,
@@ -156,7 +164,6 @@ onCreationDateChange = creationDate => {
     }
   }));
 }
-
 
 componentWillReceiveProps(nextProps) {
 
@@ -190,10 +197,17 @@ handleChangeSelect = e => {
 
 
 modalBody() {
-  const { employees } = this.props;
+  const { currentProjectTeam, employees } = this.props;
+
+  const currentProjectEmployeeIds=currentProjectTeam.map((employee) => {
+    return employee.id;
+  });
+
+  const projectEmployees = employees.filter( employee => (currentProjectEmployeeIds.includes(employee.id)) );
+
   return (	
-    <select name="employeeName" value={this.state.taskForm.employeeId} onChange={this.handleChangeSelect} >
-      {employees.map( (employee,index) => {
+    <select name="employee" value={this.state.taskForm.employeeId} onChange={this.handleChangeSelect} >
+      {projectEmployees.map( (employee,index) => {
         return  <option key={index} value={employee.id} >{employee.name+' '+employee.surName}</option>
       }
       )}
@@ -361,13 +375,15 @@ const mapStateToProps = (state) => {
 
   const {
     currentProject,
-    currentProjectTasks
+    currentProjectTasks,
+    currentProjectTeam
   } = state.projects;
 
   return {
     employees,
     currentProject,
-    currentProjectTasks
+    currentProjectTasks,
+    currentProjectTeam
   };
 }
 

@@ -30,12 +30,14 @@ render() {
 
           {projectName}
         </Link>
-
-        <UserProjectsTasks
-          tasks={tasks}
-          projectName={projectName}
-        />
-
+        {
+		  tasks.length ?
+            <UserProjectsTasks
+              tasks={tasks}
+              projectName={projectName}
+            />
+            :<div>No tasks in this project assigned to current user</div>
+        }
       </li>	
     </div>
 
