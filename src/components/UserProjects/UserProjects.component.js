@@ -22,7 +22,7 @@ class UserProjects extends Component {
     const { currentUserProjectsTasks } = this.props;
 
     const listHeight = 320;
-    const rowHeight = 160;
+    const rowHeight = 180;
     const rowWidth = 1150;	
 	
     return (

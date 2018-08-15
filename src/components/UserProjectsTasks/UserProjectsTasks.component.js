@@ -24,7 +24,7 @@ render() {
 
   const { tasks } = this.props;
 
-  const listHeight = 132;
+  const listHeight = 165;
   const rowHeight = 33;
   const rowWidth = 1100;
 

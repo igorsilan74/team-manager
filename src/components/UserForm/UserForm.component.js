@@ -60,7 +60,7 @@ setCurrentUserProjectsTasks = (currentUserProjects,currentUserTasks) => {
   let currentUserProjectsTask={};
 
   for (let i=0;i<currentUserProjects.length;i++) {
-    let tasks=currentUserTasks.filter((task) => { return task.projectId === currentUserProjects[i].id });
+    let tasks=currentUserTasks.filter((task) => { return ((task.projectId === currentUserProjects[i].id)&&(task.statusId!=3)) });
     currentUserProjectsTask={
       projectId:currentUserProjects[i].id,
       projectName:currentUserProjects[i].name,
